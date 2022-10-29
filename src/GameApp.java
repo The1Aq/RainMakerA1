@@ -1,23 +1,18 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.effect.Light;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-
-
 
 interface Updatable {
     public void update();
@@ -27,33 +22,48 @@ class GameText {
 
 }
 
-abstract class GameObject extends Group {
+abstract class GameObject extends Group implements Updatable {
     protected Translate myTranslate;
-    protected Rotate myRotate;
+    protected Rotate myRotation;
     protected Scale myScale;
-    void addT(Node node) {
+
+    public GameObject() {
+        this.setManaged(false);
         myTranslate = new Translate();
-        myRotate = new Rotate();
+        myRotation = new Rotate();
         myScale = new Scale();
-        this.getTransforms().addAll(myRotate, myTranslate,myScale);
-    }
-    public void rotate(double degrees) {
-        myRotate.setAngle(myRotate.getAngle() + degrees);
+        this.getTransforms().addAll( myRotation, myTranslate,myScale);
     }
 
-    public void update(double x) {
-        myTranslate.setY(myTranslate.getY() + x);
+    public void rotate(double degrees) {
+        myRotation.setAngle(degrees);
     }
 
     public void translate(double x, double y) {
-        myTranslate.setX(x);
-        myTranslate.setY(y);
+        myTranslate.setX(myTranslate.getX() + x);
+        myTranslate.setY(myTranslate.getY() + y);
     }
+
+    public void scale(double x, double y) {
+        myScale.setX(x);
+        myScale.setY(y);
+    }
+
+    public double getMyRotation() {
+        return myRotation.getAngle();
+    }
+
+    public void update() {
+        for (Node n : getChildren()) {
+            if (n instanceof Updatable)
+                ((Updatable) n).update();
+        }
+    }
+
     void add(Node node) {
         this.getChildren().add(node);
     }
 }
-
 
 class Pond {
 
@@ -80,12 +90,19 @@ class Helipad extends GameObject{
         add(base);
         add(baseIn);
     }
+
+    @Override
+    public void update() {
+
+    }
 }
 
 
 class Helicopter extends GameObject{
-
+    int   fuel, water;
+    double currSpeed;
     public Helicopter(){
+        super();
         Circle body = new Circle(20, Color.YELLOW);
 
         Rectangle point = new Rectangle(5,40,Color.YELLOW);
@@ -95,9 +112,25 @@ class Helicopter extends GameObject{
 
         add(body);
         add(point);
-    }
 
+        currSpeed = 0;
+        fuel = 0;
+        water = 0;
+    }
+    public void move(double x ){
+        if(currSpeed <= 10)
+            currSpeed += x;
+
+    }
+    public double getSpeed(){
+        return  currSpeed;
+    }
+    @Override
+    public void update() {
+
+    }
 }
+
 
 class Game {
     Pane game;
@@ -110,7 +143,7 @@ class Game {
         AnimationTimer loop = new AnimationTimer() {
 
             public void handle(long now) {
-
+                heli.translate(0,heli.getSpeed());
             }
         };
         loop.start();
@@ -121,7 +154,7 @@ public class GameApp extends Application {
     private static final int GAME_WIDTH = 400;
     private static final int GAME_HEIGHT = 800;
 
-    @Override
+
     public void start(Stage primaryStage) {
 
         Pane root = new Pane();
@@ -138,30 +171,31 @@ public class GameApp extends Application {
 
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT, Color.BLACK);
 
-        boom.addT(boom);
+
         boom.translate(200,50);
 
         primaryStage.setScene(scene);
         scene.setOnKeyPressed(e -> {
-            switch (e.getCode()){
-                case A :
-                    boom.rotate(15);
-                    break;
-                case D:
-                    boom.rotate(-15);
-                    break;
-                case W:
-                    boom.update(1);
-                    break;
-                case S:
-                    boom.update(-1);
-                    break;
+            if(e.getCode() == KeyCode.W){
+                boom.move(.1);
+                boom.translate(0,boom.getSpeed());
+            }
+            if(e.getCode() == KeyCode.S){
+                boom.move(-.1);
+                boom.translate(0,boom.getSpeed());
+            }
+            if(e.getCode() == KeyCode.A){
+                boom.rotate(15);
+            }
+            if(e.getCode() == KeyCode.D){
+                boom.rotate(-15);
             }
         });
 
+
         Game game = new Game(root,boom);
         game.play();
-        primaryStage.setTitle("GAME_WINDOW_TITLE");
+        primaryStage.setTitle("Rain Maker");
         // prevent window resizing by user
         primaryStage.setResizable(false);
 
