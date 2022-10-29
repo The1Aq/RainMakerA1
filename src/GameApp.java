@@ -3,7 +3,6 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.effect.Light;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -15,7 +14,7 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 interface Updatable {
-    public void update();
+    void update();
 }
 
 class GameText {
@@ -37,6 +36,8 @@ abstract class GameObject extends Group implements Updatable {
 
     public void rotate(double degrees) {
         myRotation.setAngle(degrees);
+
+
     }
 
     public void translate(double x, double y) {
@@ -77,7 +78,7 @@ class PondAndCloud {
 
 }
 
-class Helipad extends GameObject{
+class Helipad extends Group{
     public Helipad(){
         Rectangle base = new Rectangle(100 ,100);
         base.setStroke(Color.YELLOW);
@@ -87,20 +88,15 @@ class Helipad extends GameObject{
         baseIn.setTranslateX(200);
         baseIn.setTranslateY(60);
         baseIn.setStroke(Color.WHITE);
-        add(base);
-        add(baseIn);
-    }
-
-    @Override
-    public void update() {
-
+        this.getChildren().add(base);
+        this.getChildren().add(baseIn);
     }
 }
 
 
 class Helicopter extends GameObject{
     int   fuel, water;
-    double currSpeed;
+    double currSpeedY,currSpeedX;
     public Helicopter(){
         super();
         Circle body = new Circle(20, Color.YELLOW);
@@ -112,22 +108,28 @@ class Helicopter extends GameObject{
 
         add(body);
         add(point);
-
-        currSpeed = 0;
+        currSpeedX = 0;
+        currSpeedY = 0;
         fuel = 0;
         water = 0;
     }
-    public void move(double x ){
-        if(currSpeed <= 10)
-            currSpeed += x;
-
-    }
-    public double getSpeed(){
-        return  currSpeed;
+    public void move(double x,double y ){
+        if(currSpeedY <= 10)
+            currSpeedY += y;
+        if(currSpeedX <= 10)
+            currSpeedX += x;
+        if(currSpeedY < 0)
+            currSpeedX =0;
     }
     @Override
     public void update() {
-
+        myTranslate.setY(myTranslate.getY() + currSpeedY);
+        myTranslate.setX(myTranslate.getX() + currSpeedX);
+        setPivot(myTranslate.getX(),myTranslate.getY());
+    }
+    public void setPivot(double x,double y){
+        myRotation.setPivotX(x);
+        myRotation.setPivotY(y);
     }
 }
 
@@ -143,7 +145,10 @@ class Game {
         AnimationTimer loop = new AnimationTimer() {
 
             public void handle(long now) {
-                heli.translate(0,heli.getSpeed());
+                heli.update();
+                heli.rotate(heli.getMyRotation());
+                System.out.println(heli.currSpeedY);
+
             }
         };
         loop.start();
@@ -162,33 +167,35 @@ public class GameApp extends Application {
 
 
 
-
         Helipad pad = new Helipad();
-        root.getChildren().add(pad);
         Helicopter boom = new Helicopter();
-        root.getChildren().add(boom);
+        root.getChildren().addAll(pad,boom);
 
 
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT, Color.BLACK);
 
 
         boom.translate(200,50);
+        boom.setPivot(200,50);
+
 
         primaryStage.setScene(scene);
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.W){
-                boom.move(.1);
-                boom.translate(0,boom.getSpeed());
+                boom.move(0,.1);
             }
             if(e.getCode() == KeyCode.S){
-                boom.move(-.1);
-                boom.translate(0,boom.getSpeed());
+                boom.move(0,-.1);
             }
             if(e.getCode() == KeyCode.A){
-                boom.rotate(15);
+                if(boom.currSpeedY > 0.1)
+                    boom.move(-.1,0);
+                boom.rotate(boom.getMyRotation() + 15);
             }
             if(e.getCode() == KeyCode.D){
-                boom.rotate(-15);
+                if(boom.currSpeedY > 0.1)
+                    boom.move(.1,0);
+                boom.rotate(boom.getMyRotation() - 15);
             }
         });
 
