@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="implemented the movement in y dirrection">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Added a pivot to the heli">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -77,7 +77,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667074327477</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added a pivot to the heli">
+      <created>1667081963504</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1667081963504</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -95,6 +102,7 @@
     <MESSAGE value="Try" />
     <MESSAGE value="First Draft before implementing GIT" />
     <MESSAGE value="implemented the movement in y dirrection" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented the movement in y dirrection" />
+    <MESSAGE value="Added a pivot to the heli" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a pivot to the heli" />
   </component>
 </project>
