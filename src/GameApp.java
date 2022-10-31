@@ -120,7 +120,7 @@ class Helipad extends Group{
 
 class Helicopter extends GameObject{
     int   fuel, water;
-    double currSpeedY,currSpeedX;
+    double currSpeedY,currSpeedX, vel;
     boolean ignition;
     public Helicopter(){
         super();
@@ -136,22 +136,44 @@ class Helicopter extends GameObject{
         ignition = false;
         currSpeedX = 0;
         currSpeedY = 0;
+        vel =0;
         fuel = 0;
         water = 0;
     }
-    public void move(double x,double y ){
+    public void UpDown(Boolean x){
         if(ignition) {
-            if (currSpeedY < 10)
-                currSpeedY += y;
-            if (currSpeedX < 10)
-                currSpeedX += x;
+            if(x) {
+                if(vel < 10)
+                    vel += .1;
+            }else{
+                if(vel > -10)
+                    vel += -.2;
+            }
         }
+    }
+    public void Right(){
+        myRotation.setAngle((getMyRotation() % 360));
+        double rad = Math.toRadians(getMyRotation());
+        currSpeedX = vel * Math.sin(rad) * -1;
+        currSpeedY = vel * Math.cos(rad);
 
+    }
+    public void Left(){
+        myRotation.setAngle(getMyRotation() % 360);
+        double rad = Math.toRadians(getMyRotation());
+        currSpeedX = vel * Math.sin(rad) * -1;
+        currSpeedY = vel * Math.cos(rad) ;
     }
     @Override
     public void update() {
-        myTranslate.setY(myTranslate.getY() + currSpeedY);
-        myTranslate.setX(myTranslate.getX() + currSpeedX);
+
+        if((int)getMyRotation() != 0) {
+            myTranslate.setY(myTranslate.getY() + currSpeedY);
+            myTranslate.setX(myTranslate.getX() + currSpeedX);
+
+        }else{
+            myTranslate.setY(myTranslate.getY() + vel);
+        }
         setPivot(myTranslate.getX(),myTranslate.getY());
     }
     public void setPivot(double x,double y){
@@ -176,8 +198,9 @@ class Game {
                 if(count % 5 == 1) {
                     heli.update();
                     heli.rotate(heli.getMyRotation());
-                    System.out.println(heli.currSpeedY + " y speed");
-                    System.out.println(heli.currSpeedX + " X speed");
+                }
+                if(count % 40 == 1) {
+
                 }
             }
         };
@@ -194,7 +217,7 @@ public class GameApp extends Application {
 
         Pane root = new Pane();
         root.setScaleY(-1);
-        int rotation = 0;
+
         init(root);
         init(root);
         Helicopter temp = (Helicopter) root.getChildren().get(3);
@@ -204,20 +227,20 @@ public class GameApp extends Application {
 
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.W){
-                temp.move(0,.1);
+                temp.UpDown(true);
             }
             if(e.getCode() == KeyCode.S){
-                temp.move(0,-.1);
+                temp.UpDown(false);
             }
             if(e.getCode() == KeyCode.A){
-                if(temp.currSpeedY > 0.1)
-                    temp.move(-.1,0);
-                temp.rotate(temp.getMyRotation() + 15);
+                temp.myRotation.setAngle(temp.getMyRotation() + 15);
+                temp.Left();
+
             }
             if(e.getCode() == KeyCode.D){
-                if(temp.currSpeedY > 0.1)
-                    temp.move(.1,0);
-                temp.rotate(temp.getMyRotation() - 15);
+                temp.myRotation.setAngle(temp.getMyRotation() - 15);
+                temp.Right();
+
             }
             if(e.getCode() == KeyCode.I){
                 temp.ignition = true;
@@ -238,34 +261,7 @@ public class GameApp extends Application {
 
 
     } // end of start()
-    public static void calMove(int rot, Helicopter heli){
-        if(rot == 0) {
-            heli.currSpeedX = 0;
-            heli.move(0, .1);
-        } else if(rot > 0 && rot < 90){
-            heli.currSpeedX = -heli.currSpeedY;
-            heli.move(-.1,.1);
-        } else if (rot == 90) {
-            heli.currSpeedY = 0;
-            heli.move(-.1,0);
-        } else if (rot > 90 && rot < 180) {
-            System.out.println("here");
-            heli.currSpeedY = heli.currSpeedX;
-            heli.move(-.1,-.1);
-        } else if (rot == 180) {
-            heli.currSpeedX = 0;
-            heli.move(0,-.1);
-        }else if(rot > 180 && rot < 270){
-            heli.currSpeedX = -heli.currSpeedY;
-            heli.move(.1,-.1);
-        } else if (rot == 270) {
-            heli.currSpeedY = 0;
-            heli.move(.1,0);
-        } else if (rot > 270 && rot < 360) {
-            heli.currSpeedY = heli.currSpeedX;
-            heli.move(.1,.1);
-        }
-    }
+
     public void init(Pane root){
         root.getChildren().clear();
         Helipad pad = new Helipad();
