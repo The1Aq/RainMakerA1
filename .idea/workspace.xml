@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="added the option to start ignition and restart as well as a template for the new movement.">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Fixed the movement now its perfect !!!!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -91,7 +91,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667171352504</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fixed the movement now its perfect !!!!!">
+      <created>1667250630162</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1667250630162</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -111,6 +118,7 @@
     <MESSAGE value="implemented the movement in y dirrection" />
     <MESSAGE value="Added a pivot to the heli" />
     <MESSAGE value="added the option to start ignition and restart as well as a template for the new movement." />
-    <option name="LAST_COMMIT_MESSAGE" value="added the option to start ignition and restart as well as a template for the new movement." />
+    <MESSAGE value="Fixed the movement now its perfect !!!!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed the movement now its perfect !!!!!" />
   </component>
 </project>

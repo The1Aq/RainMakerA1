@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
@@ -18,9 +20,6 @@ interface Updatable {
     void update();
 }
 
-class GameText {
-
-}
 
 abstract class GameObject extends Group implements Updatable {
     protected Translate myTranslate;
@@ -67,6 +66,25 @@ abstract class GameObject extends Group implements Updatable {
     }
 }
 
+class GameText extends GameObject {
+    Text text;
+
+    public GameText(String text){
+        this.text = new Text(text);
+        this.text.setScaleY(-1);
+        this.text.setFont(Font.font(15));
+        this.text.setFill(Color.LEMONCHIFFON);
+        add(this.text);
+    }
+    public void setText(String text){
+        this.text.setText(text);
+    }
+    public void setLoc(Helicopter x){
+        this.myRotation = x.myRotation;
+        this.myTranslate = x.myTranslate;
+
+    }
+}
 class Pond {
     Random rand = new Random();
     Circle pond;
@@ -77,7 +95,6 @@ class Pond {
     }
 
 }
-
 class Cloud {
     Random rand = new Random();
     Circle cloud;
@@ -90,7 +107,6 @@ class Cloud {
 
 
 }
-
 class PondAndCloud {
     Cloud cloud;
     Pond pond;
@@ -101,7 +117,6 @@ class PondAndCloud {
         root.getChildren().addAll(cloud.cloud,pond.pond);
     }
 }
-
 class Helipad extends Group{
     public Helipad(){
         Rectangle base = new Rectangle(100 ,100);
@@ -116,16 +131,15 @@ class Helipad extends Group{
         this.getChildren().add(baseIn);
     }
 }
-
-
 class Helicopter extends GameObject{
     int   fuel, water;
     double currSpeedY,currSpeedX, vel;
     boolean ignition;
+    GameText tfuel;
     public Helicopter(){
         super();
-        Circle body = new Circle(20, Color.YELLOW);
 
+        Circle body = new Circle(20, Color.YELLOW);
         Rectangle point = new Rectangle(5,40,Color.YELLOW);
         point.setTranslateX(-2);
 
@@ -137,8 +151,14 @@ class Helicopter extends GameObject{
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 0;
+        fuel = 25000;
         water = 0;
+        tfuel = new GameText(String.valueOf(fuel));
+        tfuel.setTranslateY(-20);
+        tfuel.setTranslateX(-20);
+        add(tfuel);
+        tfuel.setLoc(this);
+
     }
     public void UpDown(Boolean x){
         if(ignition) {
@@ -170,9 +190,11 @@ class Helicopter extends GameObject{
         if((int)getMyRotation() != 0) {
             myTranslate.setY(myTranslate.getY() + currSpeedY);
             myTranslate.setX(myTranslate.getX() + currSpeedX);
+            tfuel.setLoc(this);
 
         }else{
             myTranslate.setY(myTranslate.getY() + vel);
+            tfuel.setLoc(this);
         }
         setPivot(myTranslate.getX(),myTranslate.getY());
     }
@@ -233,12 +255,12 @@ public class GameApp extends Application {
                 temp.UpDown(false);
             }
             if(e.getCode() == KeyCode.A){
-                temp.myRotation.setAngle(temp.getMyRotation() + 15);
+                temp.rotate(temp.getMyRotation() + 15);
                 temp.Left();
 
             }
             if(e.getCode() == KeyCode.D){
-                temp.myRotation.setAngle(temp.getMyRotation() - 15);
+                temp.rotate(temp.getMyRotation() - 15);
                 temp.Right();
 
             }
