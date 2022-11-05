@@ -19,8 +19,6 @@ import java.util.Random;
 interface Updatable {
     void update();
 }
-
-
 abstract class GameObject extends Group implements Updatable {
     protected Translate myTranslate;
     protected Rotate myRotation;
@@ -65,7 +63,6 @@ abstract class GameObject extends Group implements Updatable {
         this.getChildren().add(node);
     }
 }
-
 class GameText extends GameObject {
     Text text;
 
@@ -85,37 +82,43 @@ class GameText extends GameObject {
 
     }
 }
-class Pond {
+class Pond extends GameObject{
+
+    int fill;
     Random rand = new Random();
     Circle pond;
+    GameText per;
     public Pond(){
-        pond = new Circle(10,Color.BLUE);
-        pond.setTranslateY(rand.nextInt(700)+100);
-        pond.setTranslateX(rand.nextInt(400));
+        int random = rand.nextInt(25)+10;
+        fill =random;
+        per = new GameText(String.valueOf(fill));
+        pond = new Circle(random,Color.BLUE);
+        add(pond);
+        this.translate(rand.nextInt(250)+100,rand.nextInt(350)+200);
+        per = new GameText(String.valueOf(fill));
+        add(per);
+        per.setTranslateX(-10);
     }
 
 }
-class Cloud {
+class Cloud extends GameObject{
+
     Random rand = new Random();
     Circle cloud;
-    int water = 0;
+    int water;
+    GameText per;
     public Cloud(){
         cloud = new Circle(rand.nextInt(80)+30,Color.WHITE);
-        cloud.setTranslateY(rand.nextInt(700)+100);
-        cloud.setTranslateX(rand.nextInt(400));
+        water = 0;
+        add(cloud);
+        this.translate(rand.nextInt(250)+100,rand.nextInt(350)+200);
+        per = new GameText(String.valueOf(water));
+        per.text.setFill(Color.BLUE);
+        add(per);
+        cloud.setOpacity(.8);
     }
 
 
-}
-class PondAndCloud {
-    Cloud cloud;
-    Pond pond;
-
-    public PondAndCloud(Pane root){
-        cloud = new Cloud();
-        pond = new Pond();
-        root.getChildren().addAll(cloud.cloud,pond.pond);
-    }
 }
 class Helipad extends Group{
     public Helipad(){
@@ -196,15 +199,17 @@ class Helicopter extends GameObject{
             myTranslate.setY(myTranslate.getY() + vel);
             tfuel.setLoc(this);
         }
+        if(ignition)
+            fuel -= 5;
+        tfuel.setText(String.valueOf(fuel));
         setPivot(myTranslate.getX(),myTranslate.getY());
     }
     public void setPivot(double x,double y){
         myRotation.setPivotX(x);
         myRotation.setPivotY(y);
     }
+
 }
-
-
 class Game {
     Pane game;
     Helicopter heli;
@@ -241,39 +246,40 @@ public class GameApp extends Application {
         root.setScaleY(-1);
 
         init(root);
-        init(root);
-        Helicopter temp = (Helicopter) root.getChildren().get(3);
+
+        //Helicopter temp = (Helicopter) root.getChildren().get(3);
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT, Color.BLACK);
 
         primaryStage.setScene(scene);
 
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.W){
-                temp.UpDown(true);
+                ((Helicopter) root.getChildren().get(3)).UpDown(true);
             }
             if(e.getCode() == KeyCode.S){
-                temp.UpDown(false);
+                ((Helicopter) root.getChildren().get(3)).UpDown(false);
             }
             if(e.getCode() == KeyCode.A){
-                temp.rotate(temp.getMyRotation() + 15);
-                temp.Left();
+                ((Helicopter) root.getChildren().get(3)).rotate(((Helicopter) root.getChildren().get(3)).getMyRotation() + 15);
+                ((Helicopter) root.getChildren().get(3)).Left();
 
             }
             if(e.getCode() == KeyCode.D){
-                temp.rotate(temp.getMyRotation() - 15);
-                temp.Right();
+                ((Helicopter) root.getChildren().get(3)).rotate(((Helicopter) root.getChildren().get(3)).getMyRotation() - 15);
+                ((Helicopter) root.getChildren().get(3)).Right();
 
             }
             if(e.getCode() == KeyCode.I){
-                temp.ignition = true;
+                ((Helicopter) root.getChildren().get(3)).ignition = true;
             }
-            if(e.getCode() == KeyCode.R)
+            if(e.getCode() == KeyCode.R) {
                 init(root);
+                start(root,((Helicopter) root.getChildren().get(3)));
+            }
         });
 
 
-        Game game = new Game(root,temp);
-        game.play();
+        start(root,((Helicopter) root.getChildren().get(3)));
         primaryStage.setTitle("Rain Maker");
         // prevent window resizing by user
         primaryStage.setResizable(false);
@@ -288,12 +294,17 @@ public class GameApp extends Application {
         root.getChildren().clear();
         Helipad pad = new Helipad();
         Helicopter boom = new Helicopter();
-        PondAndCloud com = new PondAndCloud(root);
-        root.getChildren().addAll(pad,boom);
+        Pond x = new Pond();
+        Cloud y = new Cloud();
+        root.getChildren().addAll(pad,x,y,boom);
 
         boom.translate(200,50);
         boom.setPivot(200,50);
 
+    }
+    public void start(Pane parent, Helicopter heli){
+        Game game = new Game(parent,heli);
+        game.play();
     }
     public static void main(String[] args) {
         Application.launch();
