@@ -8,7 +8,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -164,19 +163,19 @@ class Helipad extends Group{
     }
 }
 class Blades extends GameObject{
-    public Blades(Helicopter x){
+    public Blades(){
         Rectangle blade1 = new Rectangle(5,100,Color.GHOSTWHITE);
         add(blade1);
-        setLoc(x);
-    }
-    public void setLoc(Helicopter x){
-        this.myRotation.setPivotX(x.myRotation.getPivotX());
-        this.myRotation.setPivotY(x.myRotation.getPivotY());
-        this.myTranslate = x.myTranslate;
+        myRotation.setPivotY(50+ myTranslate.getY());
 
     }
-    public void OnSpin(int x){
-        this.myRotation.setAngle(getMyRotation() + x);
+    public void setLoc(Helicopter x){
+        this.myTranslate = x.myTranslate;
+
+
+    }
+    public void OnSpin(){
+        this.myRotation.setAngle(getMyRotation() + 15);
     }
 }
 class Helicopter extends GameObject{
@@ -185,17 +184,11 @@ class Helicopter extends GameObject{
     boolean ignition;
     GameText tfuel;
     boolean ontop;
-    Blades blade;
+    Blades blade1;
     public Helicopter(){
         super();
 
-//        Ellipse body = new Ellipse(15,25);
-//        body.setFill(Color.YELLOW);
-//        Rectangle point = new Rectangle(5,40,Color.YELLOW);
-//        point.setTranslateX(-2);
-//        point.setFill(Color.YELLOW);
-//        add(body);
-//        add(point);
+
         Rectangle center = new Rectangle(20,20,Color.YELLOW);
         center.setTranslateX(-10);
         center.setTranslateY(-10);
@@ -219,9 +212,6 @@ class Helicopter extends GameObject{
         Ellipse window = new Ellipse(10,5);
         window.setFill(Color.BLUE);
         window.setTranslateY(25);
-        blade = new Blades(this);
-        blade.setTranslateY(-45);
-        blade.setTranslateX(-1);
         add(conec2);
         add(conec1);
         add(legL);
@@ -230,8 +220,9 @@ class Helicopter extends GameObject{
         add(body);
         add(center);
         add(window);
-        add(blade);
         //add(bound);
+
+
         ignition = false;
         ontop = false;
         currSpeedX = 0;
@@ -239,10 +230,17 @@ class Helicopter extends GameObject{
         vel =0;
         fuel = 25000;
         water = 0;
+        blade1 = new Blades();
+        blade1.setTranslateY(-50);
+        blade1.setTranslateX(-1);
+
+        add(blade1);
         tfuel = new GameText("F:"+String.valueOf(fuel));
         tfuel.setTranslateY(-30);
         tfuel.setTranslateX(-20);
         add(tfuel);
+
+        blade1.setLoc(this);
         tfuel.setLoc(this);
 
     }
@@ -288,9 +286,10 @@ class Helicopter extends GameObject{
             }
         }
         if(ignition){
-            blade.OnSpin(15);
+            blade1.OnSpin();
         }
-        blade.setLoc(this);
+        blade1.setLoc(this);
+
         tfuel.setText("F:"+String.valueOf(fuel));
         setPivot(myTranslate.getX(),myTranslate.getY());
 
