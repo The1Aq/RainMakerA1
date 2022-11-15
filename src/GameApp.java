@@ -4,6 +4,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -148,6 +150,41 @@ class Cloud extends GameObject{
     }
 
 }
+class HeloBody extends Group{
+    public HeloBody(){
+        Rectangle center = new Rectangle(20,20,Color.YELLOW);
+        center.setTranslateX(-10);
+        center.setTranslateY(-10);
+        Ellipse body = new Ellipse(15,25);
+        body.setTranslateY(10);
+        body.setFill(Color.YELLOW);
+        Rectangle tail = new Rectangle(5,20,Color.YELLOW);
+        tail.setTranslateY(-30);
+        tail.setTranslateX(-2.5);
+        Rectangle legR = new Rectangle(5,40,Color.YELLOW);
+        legR.setTranslateX(20);
+        legR.setTranslateY(-10);
+        Rectangle legL = new Rectangle(5,40,Color.YELLOW);
+        legL.setTranslateX(-25);
+        legL.setTranslateY(-10);
+        Rectangle conec1 = new Rectangle(40,2,Color.YELLOW);
+        conec1.setTranslateX(-20);
+        Rectangle conec2 = new Rectangle(40,2,Color.YELLOW);
+        conec2.setTranslateX(-20);
+        conec2.setTranslateY(20);
+        Ellipse window = new Ellipse(10,5);
+        window.setFill(Color.BLUE);
+        window.setTranslateY(25);
+        this.getChildren().add(conec2);
+        this.getChildren().add(conec1);
+        this.getChildren().add(legL);
+        this.getChildren().add(legR);
+        this.getChildren().add(tail);
+        this.getChildren().add(body);
+        this.getChildren().add(center);
+        this.getChildren().add(window);
+    }
+}
 class Helipad extends Group{
     public Helipad(){
         Rectangle base = new Rectangle(100 ,100);
@@ -188,40 +225,7 @@ class Helicopter extends GameObject{
     public Helicopter(){
         super();
 
-
-        Rectangle center = new Rectangle(20,20,Color.YELLOW);
-        center.setTranslateX(-10);
-        center.setTranslateY(-10);
-        Ellipse body = new Ellipse(15,25);
-        body.setTranslateY(10);
-        body.setFill(Color.YELLOW);
-        Rectangle tail = new Rectangle(5,20,Color.YELLOW);
-        tail.setTranslateY(-30);
-        tail.setTranslateX(-2.5);
-        Rectangle legR = new Rectangle(5,40,Color.YELLOW);
-        legR.setTranslateX(20);
-        legR.setTranslateY(-10);
-        Rectangle legL = new Rectangle(5,40,Color.YELLOW);
-        legL.setTranslateX(-25);
-        legL.setTranslateY(-10);
-        Rectangle conec1 = new Rectangle(40,2,Color.YELLOW);
-        conec1.setTranslateX(-20);
-        Rectangle conec2 = new Rectangle(40,2,Color.YELLOW);
-        conec2.setTranslateX(-20);
-        conec2.setTranslateY(20);
-        Ellipse window = new Ellipse(10,5);
-        window.setFill(Color.BLUE);
-        window.setTranslateY(25);
-        add(conec2);
-        add(conec1);
-        add(legL);
-        add(legR);
-        add(tail);
-        add(body);
-        add(center);
-        add(window);
-        //add(bound);
-
+        add(new HeloBody());
 
         ignition = false;
         ontop = false;
@@ -347,10 +351,12 @@ public class GameApp extends Application {
         Pane root = new Pane();
         root.setScaleY(-1);
 
+
         init(root);
 
 
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT, Color.BLACK);
+
 
         primaryStage.setScene(scene);
 
