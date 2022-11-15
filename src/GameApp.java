@@ -4,8 +4,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -199,8 +197,9 @@ class Helipad extends Group{
         this.getChildren().add(baseIn);
     }
 }
-class Blades extends GameObject{
-    public Blades(){
+class HeloBlade  extends GameObject{
+    public HeloBlade (){
+
         Rectangle blade1 = new Rectangle(5,100,Color.GHOSTWHITE);
         add(blade1);
         myRotation.setPivotY(50+ myTranslate.getY());
@@ -208,8 +207,6 @@ class Blades extends GameObject{
     }
     public void setLoc(Helicopter x){
         this.myTranslate = x.myTranslate;
-
-
     }
     public void OnSpin(){
         this.myRotation.setAngle(getMyRotation() + 15);
@@ -221,7 +218,7 @@ class Helicopter extends GameObject{
     boolean ignition;
     GameText tfuel;
     boolean ontop;
-    Blades blade1;
+    HeloBlade blade;
     public Helicopter(){
         super();
 
@@ -234,17 +231,17 @@ class Helicopter extends GameObject{
         vel =0;
         fuel = 25000;
         water = 0;
-        blade1 = new Blades();
-        blade1.setTranslateY(-50);
-        blade1.setTranslateX(-1);
+        blade = new HeloBlade ();
+        blade.setTranslateY(-50);
+        blade.setTranslateX(-1);
 
-        add(blade1);
+        add(blade);
         tfuel = new GameText("F:"+String.valueOf(fuel));
         tfuel.setTranslateY(-30);
         tfuel.setTranslateX(-20);
         add(tfuel);
 
-        blade1.setLoc(this);
+        blade.setLoc(this);
         tfuel.setLoc(this);
 
     }
@@ -290,9 +287,9 @@ class Helicopter extends GameObject{
             }
         }
         if(ignition){
-            blade1.OnSpin();
+            blade.OnSpin();
         }
-        blade1.setLoc(this);
+        blade.setLoc(this);
 
         tfuel.setText("F:"+String.valueOf(fuel));
         setPivot(myTranslate.getX(),myTranslate.getY());
