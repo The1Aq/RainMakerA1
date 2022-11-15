@@ -3,6 +3,8 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -95,15 +97,15 @@ class Pond extends GameObject{
         pond = new Circle(random,Color.BLUE);
         add(pond);
         this.translate(rand.nextInt(250)+100,rand.nextInt(350)+200);
-        per = new GameText(String.valueOf(fill) + "%");
+        per = new GameText(fill + "%");
         add(per);
         per.setTranslateX(-10);
     }
     public void seeded(int x){
-        if(x > 1){
+        if(x >= 1){
             if(fill < 100) {
                 fill++;
-                per.setText(String.valueOf(fill)+ "%");
+                per.setText(fill+ "%");
                 scale(.02, .02);
             }
         }
@@ -122,7 +124,7 @@ class Cloud extends GameObject{
         seed = 0;
         add(cloud);
         this.translate(rand.nextInt(250)+100,rand.nextInt(350)+200);
-        per = new GameText(String.valueOf(seed)+ "%");
+        per = new GameText(seed + "%");
         per.text.setFill(Color.BLUE);
         add(per);
         cloud.setOpacity(.8);
@@ -139,7 +141,7 @@ class Cloud extends GameObject{
     public int  deseed(){
         if(seed >= 1){
             seed --;
-            per.setText(String.valueOf(seed)+ "%");
+            per.setText(seed + "%");
         }
         return seed;
     }
@@ -236,7 +238,7 @@ class Helicopter extends GameObject{
         blade.setTranslateX(-1);
 
         add(blade);
-        tfuel = new GameText("F:"+String.valueOf(fuel));
+        tfuel = new GameText("F:" + fuel);
         tfuel.setTranslateY(-30);
         tfuel.setTranslateX(-20);
         add(tfuel);
@@ -252,7 +254,7 @@ class Helicopter extends GameObject{
                     vel += .1;
             }else{
                 if(vel > -10)
-                    vel += -.2;
+                    vel -= .2;
             }
         }
     }
@@ -291,7 +293,7 @@ class Helicopter extends GameObject{
         }
         blade.setLoc(this);
 
-        tfuel.setText("F:"+String.valueOf(fuel));
+        tfuel.setText("F:" + fuel);
         setPivot(myTranslate.getX(),myTranslate.getY());
 
     }
@@ -307,9 +309,9 @@ class Game extends Pane{
     Cloud cloud;
     Pond pond;
     public Game(Pane parent) {
-       heli = (Helicopter) parent.getChildren().get(3);
-       cloud = (Cloud) parent.getChildren().get(2);
-       pond = (Pond) parent.getChildren().get(1);
+       heli = (Helicopter) parent.getChildren().get(4);
+       cloud = (Cloud) parent.getChildren().get(3);
+       pond = (Pond) parent.getChildren().get(2);
     }
     public void play(){
         AnimationTimer loop = new AnimationTimer() {
@@ -334,8 +336,22 @@ class Game extends Pane{
         loop.start();
     }
     public boolean isTop(Helicopter heli, Cloud cloud){
-        return (heli.myTranslate.getX() > (cloud.myTranslate.getX() - cloud.getRadius()) && heli.myTranslate.getX() < (cloud.myTranslate.getX() + cloud.getRadius()))
-                && (heli.myTranslate.getY() < cloud.myTranslate.getY() + cloud.getRadius() && heli.myTranslate.getY() > cloud.myTranslate.getY() - cloud.getRadius());
+        return (heli.myTranslate.getX() > (cloud.myTranslate.getX() -
+                cloud.getRadius()) && heli.myTranslate.getX()
+                < (cloud.myTranslate.getX() + cloud.getRadius()))
+                && (heli.myTranslate.getY() < cloud.myTranslate.getY()
+                + cloud.getRadius() && heli.myTranslate.getY()
+                > cloud.myTranslate.getY() - cloud.getRadius());
+    }
+}
+class backGround extends Pane{
+    Image backGround;
+    public backGround(){
+        backGround = new Image("land.jpg");
+        ImageView back = new ImageView(backGround);
+        back.setFitHeight(800);
+        back.setFitWidth(400);
+        this.getChildren().add(back);
     }
 }
 public class GameApp extends Application {
@@ -352,43 +368,43 @@ public class GameApp extends Application {
         init(root);
 
 
-        Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT, Color.BLACK);
+        Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT);
 
 
         primaryStage.setScene(scene);
 
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.W){
-                ((Helicopter) root.getChildren().get(3)).UpDown(true);
+                ((Helicopter) root.getChildren().get(4)).UpDown(true);
             }
             if(e.getCode() == KeyCode.S){
-                ((Helicopter) root.getChildren().get(3)).UpDown(false);
+                ((Helicopter) root.getChildren().get(4)).UpDown(false);
             }
             if(e.getCode() == KeyCode.A){
-                ((Helicopter) root.getChildren().get(3)).rotate(
-                        ((Helicopter) root.getChildren().get(3)).
+                ((Helicopter) root.getChildren().get(4)).rotate(
+                        ((Helicopter) root.getChildren().get(4)).
                                 getMyRotation() + 15);
-                ((Helicopter) root.getChildren().get(3)).Left();
+                ((Helicopter) root.getChildren().get(4)).Left();
 
             }
             if(e.getCode() == KeyCode.D){
-                ((Helicopter) root.getChildren().get(3)).rotate(
-                        ((Helicopter) root.getChildren().get(3)).
+                ((Helicopter) root.getChildren().get(4)).rotate(
+                        ((Helicopter) root.getChildren().get(4)).
                                 getMyRotation() - 15);
-                ((Helicopter) root.getChildren().get(3)).Right();
+                ((Helicopter) root.getChildren().get(4)).Right();
 
             }
             if(e.getCode() == KeyCode.I){
-                ((Helicopter) root.getChildren().get(3)).ignition =
-                        !((Helicopter) root.getChildren().get(3)).ignition;
+                ((Helicopter) root.getChildren().get(4)).ignition =
+                        !((Helicopter) root.getChildren().get(4)).ignition;
             }
             if(e.getCode() == KeyCode.R) {
                 init(root);
                 start(root);
             }
             if(e.getCode() == KeyCode.SPACE){
-                if(((Helicopter) root.getChildren().get(3)).ontop == true){
-                    ((Cloud)root.getChildren().get(2)).seed();
+                if(((Helicopter) root.getChildren().get(4)).ontop){
+                    ((Cloud)root.getChildren().get(3)).seed();
                 }
             }
         });
@@ -411,11 +427,11 @@ public class GameApp extends Application {
         Helicopter boom = new Helicopter();
         Pond x = new Pond();
         Cloud y = new Cloud();
-        root.getChildren().addAll(pad,x,y,boom);
+        backGround back = new backGround();
+        root.getChildren().addAll(back,pad,x,y,boom);
 
         boom.translate(200,50);
         boom.setPivot(200,50);
-
     }
     public void start(Pane parent){
         Game game = new Game(parent);
