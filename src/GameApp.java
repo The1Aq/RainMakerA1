@@ -17,8 +17,8 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-
 import java.util.Random;
+
 interface Updatable {
     void update();
 }
@@ -200,19 +200,29 @@ class Helipad extends Group{
     }
 }
 class HeloBlade  extends GameObject{
+    int bladeSpeed;
+    boolean on;
     public HeloBlade (){
 
         Rectangle blade1 = new Rectangle(5,100,Color.GHOSTWHITE);
         add(blade1);
         myRotation.setPivotY(50+ myTranslate.getY());
+        bladeSpeed = 0;
+        on = false;
 
     }
     public void setLoc(Helicopter x){
         this.myTranslate = x.myTranslate;
     }
-    public void OnSpin(){
-        this.myRotation.setAngle(getMyRotation() + 15);
+
+    public void update(){
+        if(bladeSpeed < 30 && on)
+            bladeSpeed++;
+        else if(bladeSpeed > 0 && on == false)
+            bladeSpeed--;
+        this.myRotation.setAngle(getMyRotation() + bladeSpeed);
     }
+
 }
 class Helicopter extends GameObject{
     int   fuel, water;
@@ -289,7 +299,11 @@ class Helicopter extends GameObject{
             }
         }
         if(ignition){
-            blade.OnSpin();
+            blade.on = ignition;
+            blade.update();
+        }else{
+            blade.on = ignition;
+            blade.update();
         }
         blade.setLoc(this);
 
