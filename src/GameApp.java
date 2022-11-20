@@ -189,8 +189,8 @@ class Helipad extends Group{
     public Helipad(){
         Rectangle base = new Rectangle(100 ,100);
         base.setStroke(Color.YELLOW);
-        base.setTranslateY(10);
-        base.setTranslateX(150);
+        base.setY(10);
+        base.setX(150);
         Circle baseIn = new Circle(45);
         baseIn.setTranslateX(200);
         baseIn.setTranslateY(60);
@@ -216,18 +216,20 @@ class HeloBlade  extends GameObject{
     }
 
     public void update(){
-        if(bladeSpeed < 30 && on)
+        if(bladeSpeed <= 30 && on)
             bladeSpeed++;
-        else if(bladeSpeed > 0 && on == false)
+        else if(bladeSpeed > 0 && !on)
             bladeSpeed--;
         this.myRotation.setAngle(getMyRotation() + bladeSpeed);
     }
-
+    public boolean maxMin(){
+        return bladeSpeed == 30 || bladeSpeed == 0;
+    }
 }
 class Helicopter extends GameObject{
     int   fuel, water;
     double currSpeedY,currSpeedX, vel;
-    boolean ignition;
+    boolean ignition,off, starting, stopping,ready;
     GameText tfuel;
     boolean ontop;
     HeloBlade blade;
@@ -235,7 +237,10 @@ class Helicopter extends GameObject{
         super();
 
         add(new HeloBody());
-
+        off = true;
+        starting = false;
+        stopping = false;
+        ready = false;
         ignition = false;
         ontop = false;
         currSpeedX = 0;
@@ -277,43 +282,62 @@ class Helicopter extends GameObject{
     @Override
     public void update() {
 
-        if((int)getMyRotation() != 0) {
-            double rad = Math.toRadians(getMyRotation());
-            currSpeedX = vel * Math.sin(rad) * -1;
-            currSpeedY = vel * Math.cos(rad) ;
-            myTranslate.setY(myTranslate.getY() + currSpeedY);
-            myTranslate.setX(myTranslate.getX() + currSpeedX);
-        }else{
-            myTranslate.setY(myTranslate.getY() + vel);
-        }
-        tfuel.setLoc(this);
-        if(ignition) {
-            if(vel < 1)
-                fuel -= 5;
-            else if (vel < 2) {
-                fuel -= 25;
-            }else if(vel < 3){
-                fuel -= 100;
-            }else{
-                fuel -= 150;
-            }
-        }
-        if(ignition){
+        if(inHelipad() && off && ignition){
+            off = false;
+            starting = true;
+        }else if(starting && ignition){
             blade.on = ignition;
-            blade.update();
-        }else{
-            blade.on = ignition;
-            blade.update();
-        }
-        blade.setLoc(this);
 
+            if(blade.maxMin()) {
+                ready = true;
+                starting = false;
+            }
+        }else if((ready || starting) && !ignition && inHelipad()){
+            ready = false;
+            starting = false;
+            stopping = true;
+            blade.on = ignition;
+            blade.setLoc(this);
+        }else if (stopping && !ignition) {
+            off = true;
+        }else if(ready && ignition && blade.maxMin()){
+            if(ignition) {
+                if(vel < 1)
+                    fuel -= 5;
+                else if (vel < 2) {
+                    fuel -= 25;
+                }else if(vel < 3){
+                    fuel -= 100;
+                }else{
+                    fuel -= 150;
+                }
+            }
+            if((int)getMyRotation() != 0) {
+                double rad = Math.toRadians(getMyRotation());
+                currSpeedX = vel * Math.sin(rad) * -1;
+                currSpeedY = vel * Math.cos(rad) ;
+                myTranslate.setY(myTranslate.getY() + currSpeedY);
+                myTranslate.setX(myTranslate.getX() + currSpeedX);
+            }else{
+                myTranslate.setY(myTranslate.getY() + vel);
+            }
+            blade.on = ignition;
+            blade.setLoc(this);
+        }
+        blade.update();
+        blade.setLoc(this);
+        tfuel.setLoc(this);
         tfuel.setText("F:" + fuel);
         setPivot(myTranslate.getX(),myTranslate.getY());
-
+        System.out.println(inHelipad());
     }
     public void setPivot(double x,double y){
         myRotation.setPivotX(x);
         myRotation.setPivotY(y);
+    }
+    public boolean inHelipad(){
+        return this.myTranslate.getX() > (150) && this.myTranslate.getX() < (250)
+                && this.myTranslate.getY() < (110) && this.myTranslate.getY() > 10;
     }
 
 }
@@ -399,17 +423,16 @@ public class GameApp extends Application {
                         ((Helicopter) root.getChildren().get(4)).
                                 getMyRotation() + 15);
                 ((Helicopter) root.getChildren().get(4)).Left();
-
             }
             if(e.getCode() == KeyCode.D){
                 ((Helicopter) root.getChildren().get(4)).rotate(
                         ((Helicopter) root.getChildren().get(4)).
                                 getMyRotation() - 15);
                 ((Helicopter) root.getChildren().get(4)).Right();
-
             }
             if(e.getCode() == KeyCode.I){
-                ((Helicopter) root.getChildren().get(4)).ignition =
+                if(((Helicopter) root.getChildren().get(4)).inHelipad())
+                    ((Helicopter) root.getChildren().get(4)).ignition =
                         !((Helicopter) root.getChildren().get(4)).ignition;
             }
             if(e.getCode() == KeyCode.R) {

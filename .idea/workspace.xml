@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Made a backGround for the game including its own little class">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="fix blade state to rampup and down">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -155,7 +156,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668489384813</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="fix blade state to rampup and down">
+      <created>1668570654714</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1668570654714</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -184,6 +192,7 @@
     <MESSAGE value="got the HeloBody class to work" />
     <MESSAGE value="turned my blade class to HeloBlade" />
     <MESSAGE value="Made a backGround for the game including its own little class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made a backGround for the game including its own little class" />
+    <MESSAGE value="fix blade state to rampup and down" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix blade state to rampup and down" />
   </component>
 </project>
