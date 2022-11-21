@@ -102,6 +102,7 @@ class Pond extends GameObject{
         per = new GameText(fill + "%");
         add(per);
         per.setTranslateX(-10);
+
     }
     public void seeded(int x){
         if(x >= 1){
@@ -445,35 +446,71 @@ class Game extends Pane{
                 .getChildren().get(1)));
         clouds.add(((Cloud)((Pane)parent.getChildren().get(3))
                 .getChildren().get(2)));
-        lines.add(new Lines(ponds.get(0),clouds.get(0)));
-        lines.add(new Lines(ponds.get(1),clouds.get(1)));
-        lines.add(new Lines(ponds.get(2),clouds.get(2)));
+        lines.add(new Lines(ponds,clouds.get(0)));
+        lines.add(new Lines(ponds,clouds.get(1)));
+        lines.add(new Lines(ponds,clouds.get(2)));
         parent.getChildren().addAll(lines.get(0),lines.get(1),lines.get(2));
 
     }
-    public void invis(){
+    public void inVis(){
         lines.get(0).Visible();
         lines.get(1).Visible();
         lines.get(2).Visible();
     }
 }
 class Lines extends Pane{
-    Pond p;
+
+    ArrayList<Pond> ponds;
     Cloud c;
-    Line line;
-    public Lines(Pond p, Cloud c){
-        this.p = p;
+    Line line0;
+    Line line1;
+    Line line2;
+    public Lines(ArrayList<Pond> p, Cloud c){
+        this.ponds = p;
         this.c = c;
-        line = new Line(this.p.myTranslate.getX(),this.p.myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
-        this.getChildren().add(line);
+        line0 = new Line(this.ponds.get(0).myTranslate.getX(),this.ponds.get(0).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        this.getChildren().add(line0);
+        line1 = new Line(this.ponds.get(1).myTranslate.getX(),this.ponds.get(1).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        this.getChildren().add(line1);
+        line2 = new Line(this.ponds.get(2).myTranslate.getX(),this.ponds.get(2).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        this.getChildren().add(line2);
     }
     public void update(){
-        line.setEndX(this.c.myTranslate.getX());
-        line.setEndY(this.c.myTranslate.getY());
+        line0.setEndX(this.c.myTranslate.getX());
+        line0.setEndY(this.c.myTranslate.getY());
+        line1.setEndX(this.c.myTranslate.getX());
+        line1.setEndY(this.c.myTranslate.getY());
+        line2.setEndX(this.c.myTranslate.getX());
+        line2.setEndY(this.c.myTranslate.getY());
+        if(pInRange(this.ponds.get(0), line0))
+            line0.setStroke(Color.BLACK);
+        else
+            line0.setStroke(Color.TRANSPARENT);
+        if(pInRange(this.ponds.get(1), line1))
+            line1.setStroke(Color.BLACK);
+        else
+            line1.setStroke(Color.TRANSPARENT);
+        if(pInRange(this.ponds.get(2), line2))
+            line2.setStroke(Color.BLACK);
+        else
+            line2.setStroke(Color.TRANSPARENT);
+
 
     }
     public void Visible(){
-        line.setVisible(!line.isVisible());
+        line0.setVisible(!line0.isVisible());
+        line1.setVisible(!line1.isVisible());
+        line2.setVisible(!line2.isVisible());
+    }
+    public boolean pInRange(Pond p,Line line){
+        double dis = Math.sqrt(Math.pow(line.getEndX()-line.getStartX(),2)+Math.pow(line.getEndY()-line.getStartY(),2));
+       if(dis < p.pond.getRadius()*8){
+           System.out.println(dis);
+           System.out.println(p.pond.getRadius()*8);
+           return true;
+       }else{
+           return false;
+       }
     }
 }
 class backGround extends Pane{
@@ -540,7 +577,7 @@ public class GameApp extends Application {
                 }
             }
             if(e.getCode() == KeyCode.D){
-                game.invis();
+                game.inVis();
             }
         });
         start(root);

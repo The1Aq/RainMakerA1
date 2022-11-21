@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Added the lines">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Added the lines keybind to appear of desappear">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -190,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668999248995</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Added the lines keybind to appear of desappear">
+      <created>1669001093758</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1669001093758</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -224,6 +231,7 @@
     <MESSAGE value="Added multiple ponds and clounds and hard coded the unions" />
     <MESSAGE value="background" />
     <MESSAGE value="Added the lines" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the lines" />
+    <MESSAGE value="Added the lines keybind to appear of desappear" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the lines keybind to appear of desappear" />
   </component>
 </project>
