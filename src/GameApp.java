@@ -207,18 +207,17 @@ class HeloBody extends Group{
         this.getChildren().add(window);
     }
 }
-class Helipad extends Group{
+class Helipad extends Pane{
+    Image pad;
     public Helipad(){
-        Rectangle base = new Rectangle(100 ,100);
-        base.setStroke(Color.YELLOW);
-        base.setY(10);
-        base.setX(350);
-        Circle baseIn = new Circle(45);
-        baseIn.setTranslateX(400);
-        baseIn.setTranslateY(60);
-        baseIn.setStroke(Color.WHITE);
-        this.getChildren().add(base);
-        this.getChildren().add(baseIn);
+        pad = new Image("pad.png");
+        ImageView pads = new ImageView(pad);
+        pads.setFitWidth(100);
+        pads.setFitHeight(100);
+        this.getChildren().add(pads);
+        pads.setTranslateX(350);
+        pads.setTranslateY(10);
+
     }
 }
 class HeloBlade  extends GameObject{
@@ -504,13 +503,7 @@ class Lines extends Pane{
     }
     public boolean pInRange(Pond p,Line line){
         double dis = Math.sqrt(Math.pow(line.getEndX()-line.getStartX(),2)+Math.pow(line.getEndY()-line.getStartY(),2));
-       if(dis < p.pond.getRadius()*8){
-           System.out.println(dis);
-           System.out.println(p.pond.getRadius()*8);
-           return true;
-       }else{
-           return false;
-       }
+        return dis < p.pond.getRadius() * 8;
     }
 }
 class backGround extends Pane{
