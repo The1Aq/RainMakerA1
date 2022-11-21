@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -119,6 +120,8 @@ class Cloud extends GameObject{
     int seed;
     GameText per;
     int r;
+    boolean outOfB;
+    double windSpeed;
     public Cloud(){
         r = rand.nextInt(50)+30;
         cloud = new Circle(r,Color.WHITE);
@@ -129,6 +132,8 @@ class Cloud extends GameObject{
         per.text.setFill(Color.BLUE);
         add(per);
         cloud.setOpacity(.8);
+        windSpeed = 2;
+        outOfB = false;
     }
     public void seed(){
         if(seed <= 100)
@@ -149,7 +154,22 @@ class Cloud extends GameObject{
     public int getRadius(){
         return r;
     }
+    @Override
+    public void update() {
+        this.myTranslate.setX(this.myTranslate.getX()+windSpeed);
+        if(this.myTranslate.getX() - r > 400)
+            outOfB = true;
+    }
+    public void restart(){
+        outOfB = false;
+        cloud.setRadius(rand.nextInt(50)+30);
+        this.myTranslate.setX(-r);
+        this.myTranslate.setY(rand.nextInt(550)+200);
 
+        windSpeed = rand.nextDouble(2)+0.5;
+
+
+    }
 }
 class HeloBody extends Group{
     public HeloBody(){
@@ -303,17 +323,17 @@ class Helicopter extends GameObject{
         }else if (stopping && !ignition) {
             off = true;
         }else if(ready && ignition ){
-            if(ignition) {
-                if(vel < 1)
-                    fuel -= 5;
-                else if (vel < 2) {
-                    fuel -= 25;
-                }else if(vel < 3){
-                    fuel -= 100;
-                }else{
-                    fuel -= 150;
-                }
+
+            if(vel < 1)
+                fuel -= 5;
+            else if (vel < 2) {
+                fuel -= 25;
+            }else if(vel < 3){
+                fuel -= 100;
+            }else{
+                fuel -= 150;
             }
+
             if((int)getMyRotation() != 0) {
                 double rad = Math.toRadians(getMyRotation());
                 currSpeedX = vel * Math.sin(rad) * -1;
@@ -347,6 +367,7 @@ class Game extends Pane{
     Helicopter heli;
     ArrayList<Cloud> clouds = new ArrayList<>();
     ArrayList<Pond> ponds = new ArrayList<>();
+    ArrayList<Lines> lines = new ArrayList<>();
     public Game(Pane parent) {
        heli = (Helicopter) parent.getChildren().get(4);
        populate(parent);
@@ -360,6 +381,20 @@ class Game extends Pane{
                 if(count % 5 == 1) {
                     heli.update();
                     heli.rotate(heli.getMyRotation());
+                }
+                if(count % 10 == 1 ){
+                    clouds.get(0).update();
+                    clouds.get(1).update();
+                    clouds.get(2).update();
+                    if(clouds.get(0).outOfB)
+                        clouds.get(0).restart();
+                    if(clouds.get(1).outOfB)
+                        clouds.get(1).restart();
+                    if(clouds.get(2).outOfB)
+                        clouds.get(2).restart();
+                    lines.get(0).update();
+                    lines.get(1).update();
+                    lines.get(2).update();
                 }
                 if(count % 60 == 1) {
                     ponds.get(0).seeded(clouds.get(0).deseed());
@@ -381,6 +416,7 @@ class Game extends Pane{
                 }else{
                     heli.ontop3 = false;
                 }
+
             }
         };
         loop.start();
@@ -408,6 +444,30 @@ class Game extends Pane{
                 .getChildren().get(1)));
         clouds.add(((Cloud)((Pane)parent.getChildren().get(3))
                 .getChildren().get(2)));
+        lines.add(new Lines(ponds.get(0),clouds.get(0)));
+        lines.add(new Lines(ponds.get(1),clouds.get(1)));
+        lines.add(new Lines(ponds.get(2),clouds.get(2)));
+        parent.getChildren().addAll(lines.get(0),lines.get(1),lines.get(2));
+
+    }
+}
+class Lines extends Pane{
+    Pond p;
+    Cloud c;
+    Line line;
+    public Lines(Pond p, Cloud c){
+        this.p = p;
+        this.c = c;
+        line = new Line(this.p.myTranslate.getX(),this.p.myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        this.getChildren().add(line);
+    }
+    public void update(){
+        line.setEndX(this.c.myTranslate.getX());
+        line.setEndY(this.c.myTranslate.getY());
+
+    }
+    public void Visible(){
+        line.setVisible(!line.isVisible());
     }
 }
 class backGround extends Pane{
