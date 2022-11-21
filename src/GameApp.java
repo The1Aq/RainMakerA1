@@ -98,7 +98,7 @@ class Pond extends GameObject{
         per = new GameText(String.valueOf(fill));
         pond = new Circle(random,Color.BLUE);
         add(pond);
-        this.translate(rand.nextInt(250)+100,rand.nextInt(350)+200);
+        this.translate(rand.nextInt(650)+100,rand.nextInt(350)+200);
         per = new GameText(fill + "%");
         add(per);
         per.setTranslateX(-10);
@@ -127,7 +127,7 @@ class Cloud extends GameObject{
         cloud = new Circle(r,Color.WHITE);
         seed = 0;
         add(cloud);
-        this.translate(rand.nextInt(250)+100,rand.nextInt(550)+200);
+        this.translate(rand.nextInt(750)+100,rand.nextInt(550)+200);
         per = new GameText(seed + "%");
         per.text.setFill(Color.BLUE);
         add(per);
@@ -157,7 +157,7 @@ class Cloud extends GameObject{
     @Override
     public void update() {
         this.myTranslate.setX(this.myTranslate.getX()+windSpeed);
-        if(this.myTranslate.getX() - r > 400)
+        if(this.myTranslate.getX() - r > 800)
             outOfB = true;
     }
     public void restart(){
@@ -211,9 +211,9 @@ class Helipad extends Group{
         Rectangle base = new Rectangle(100 ,100);
         base.setStroke(Color.YELLOW);
         base.setY(10);
-        base.setX(150);
+        base.setX(350);
         Circle baseIn = new Circle(45);
-        baseIn.setTranslateX(200);
+        baseIn.setTranslateX(400);
         baseIn.setTranslateY(60);
         baseIn.setStroke(Color.WHITE);
         this.getChildren().add(base);
@@ -357,7 +357,8 @@ class Helicopter extends GameObject{
         myRotation.setPivotY(y);
     }
     public boolean inHelipad(){
-        return this.myTranslate.getX() > (150) && this.myTranslate.getX() < (250)
+
+        return this.myTranslate.getX() > (350) && this.myTranslate.getX() < (450)
                 && this.myTranslate.getY() < (110) && this.myTranslate.getY() > 10;
     }
 
@@ -450,6 +451,11 @@ class Game extends Pane{
         parent.getChildren().addAll(lines.get(0),lines.get(1),lines.get(2));
 
     }
+    public void invis(){
+        lines.get(0).Visible();
+        lines.get(1).Visible();
+        lines.get(2).Visible();
+    }
 }
 class Lines extends Pane{
     Pond p;
@@ -476,15 +482,15 @@ class backGround extends Pane{
         backGround = new Image("land.jpg");
         ImageView back = new ImageView(backGround);
         back.setFitHeight(800);
-        back.setFitWidth(400);
+        back.setFitWidth(800);
         this.getChildren().add(back);
     }
 }
 public class GameApp extends Application {
-    private static final int GAME_WIDTH = 400;
+    private static final int GAME_WIDTH = 800;
     private static final int GAME_HEIGHT = 800;
-
-
+    Game game;
+    Helicopter heli;
     public void start(Stage primaryStage) {
 
         Pane root = new Pane();
@@ -498,19 +504,19 @@ public class GameApp extends Application {
 
 
         primaryStage.setScene(scene);
-        Helicopter heli = ((Helicopter) root.getChildren().get(4));
+        heli = ((Helicopter) root.getChildren().get(4));
         scene.setOnKeyPressed(e -> {
-            if(e.getCode() == KeyCode.W){
+            if(e.getCode() == KeyCode.UP){
                 heli.UpDown(true);
             }
-            if(e.getCode() == KeyCode.S){
+            if(e.getCode() == KeyCode.DOWN){
                 heli.UpDown(false);
             }
-            if(e.getCode() == KeyCode.A){
+            if(e.getCode() == KeyCode.LEFT){
                 heli.rotate(heli.getMyRotation() + 15);
                 heli.Left();
             }
-            if(e.getCode() == KeyCode.D){
+            if(e.getCode() == KeyCode.RIGHT){
                 heli.rotate(heli.getMyRotation() - 15);
                 heli.Right();
             }
@@ -533,10 +539,13 @@ public class GameApp extends Application {
                     ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(2)).seed();
                 }
             }
+            if(e.getCode() == KeyCode.D){
+                game.invis();
+            }
         });
-
-
         start(root);
+
+
         primaryStage.setTitle("Rain Maker");
         // prevent window resizing by user
         primaryStage.setResizable(false);
@@ -556,11 +565,13 @@ public class GameApp extends Application {
         root.getChildren().addAll(back,pad,new Pane(new Pond(),new Pond(),new Pond()),
                 new Pane(new Cloud(),new Cloud(),new Cloud()),boom);
 
-        boom.translate(200,50);
-        boom.setPivot(200,50);
+        boom.translate(400,50);
+        boom.setPivot(400,50);
+        heli = boom;
     }
     public void start(Pane parent){
-        Game game = new Game(parent);
+        game = null;
+        game = new Game(parent);
         game.play();
     }
     public static void main(String[] args) {
