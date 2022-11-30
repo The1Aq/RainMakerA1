@@ -104,6 +104,7 @@ class Pond extends GameObject{
         per.setTranslateX(-10);
 
     }
+
     public void seeded(int x){
         if(x >= 1){
             if(fill < 100) {
@@ -323,7 +324,6 @@ class Helicopter extends GameObject{
         }else if (stopping && !ignition) {
             off = true;
         }else if(ready && ignition ){
-
             if(vel < 1)
                 fuel -= 5;
             else if (vel < 2) {
@@ -398,9 +398,7 @@ class Game extends Pane{
                     lines.get(2).update();
                 }
                 if(count % 60 == 1) {
-                    ponds.get(0).seeded(clouds.get(0).deseed());
-                    ponds.get(1).seeded(clouds.get(1).deseed());
-                    ponds.get(2).seeded(clouds.get(2).deseed());
+                    deseed();
                 }
                 if(isTop(heli,clouds.get(0))){
                     heli.ontop1 = true;
@@ -418,6 +416,28 @@ class Game extends Pane{
                     heli.ontop3 = false;
                 }
 
+            }
+            public void deseed(){
+                if(lines.get(0).Lac0)
+                    ponds.get(0).seeded(clouds.get(0).deseed());
+                if(lines.get(0).Lac1)
+                    ponds.get(1).seeded(clouds.get(0).deseed());
+                if(lines.get(0).Lac2)
+                    ponds.get(2).seeded(clouds.get(0).deseed());
+
+                if(lines.get(1).Lac0)
+                    ponds.get(0).seeded(clouds.get(1).deseed());
+                if(lines.get(1).Lac1)
+                    ponds.get(1).seeded(clouds.get(1).deseed());
+                if(lines.get(1).Lac2)
+                    ponds.get(2).seeded(clouds.get(1).deseed());
+
+                if(lines.get(2).Lac0)
+                    ponds.get(0).seeded(clouds.get(2).deseed());
+                if(lines.get(2).Lac1)
+                    ponds.get(1).seeded(clouds.get(2).deseed());
+                if(lines.get(2).Lac2)
+                    ponds.get(2).seeded(clouds.get(2).deseed());
             }
         };
         loop.start();
@@ -464,6 +484,7 @@ class Lines extends Pane{
     Line line0;
     Line line1;
     Line line2;
+    boolean Lac0, Lac1, Lac2;
     public Lines(ArrayList<Pond> p, Cloud c){
         this.ponds = p;
         this.c = c;
@@ -473,6 +494,9 @@ class Lines extends Pane{
         this.getChildren().add(line1);
         line2 = new Line(this.ponds.get(2).myTranslate.getX(),this.ponds.get(2).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
         this.getChildren().add(line2);
+        Lac0 = false;
+        Lac1 = false;
+        Lac2 = false;
     }
     public void update(){
         line0.setEndX(this.c.myTranslate.getX());
@@ -481,18 +505,30 @@ class Lines extends Pane{
         line1.setEndY(this.c.myTranslate.getY());
         line2.setEndX(this.c.myTranslate.getX());
         line2.setEndY(this.c.myTranslate.getY());
-        if(pInRange(this.ponds.get(0), line0))
+        if(pInRange(this.ponds.get(0), line0)) {
             line0.setStroke(Color.BLACK);
-        else
+            Lac0 = true;
+        }
+        else {
             line0.setStroke(Color.TRANSPARENT);
-        if(pInRange(this.ponds.get(1), line1))
+            Lac0 = false;
+        }
+        if(pInRange(this.ponds.get(1), line1)) {
             line1.setStroke(Color.BLACK);
-        else
+            Lac1 = true;
+        }
+        else {
             line1.setStroke(Color.TRANSPARENT);
-        if(pInRange(this.ponds.get(2), line2))
+            Lac1 = false;
+        }
+        if(pInRange(this.ponds.get(2), line2)) {
             line2.setStroke(Color.BLACK);
-        else
+            Lac2 = true;
+        }
+        else {
             line2.setStroke(Color.TRANSPARENT);
+            Lac2 = false;
+        }
 
 
     }
@@ -502,9 +538,11 @@ class Lines extends Pane{
         line2.setVisible(!line2.isVisible());
     }
     public boolean pInRange(Pond p,Line line){
-        double dis = Math.sqrt(Math.pow(line.getEndX()-line.getStartX(),2)+Math.pow(line.getEndY()-line.getStartY(),2));
+        double dis = Math.sqrt(Math.pow(line.getEndX()-line.getStartX(),2)
+                +Math.pow(line.getEndY()-line.getStartY(),2));
         return dis < p.pond.getRadius() * 8;
     }
+
 }
 class backGround extends Pane{
     Image backGround;
@@ -535,6 +573,7 @@ public class GameApp extends Application {
 
         primaryStage.setScene(scene);
         heli = ((Helicopter) root.getChildren().get(4));
+
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.UP){
                 heli.UpDown(true);
@@ -603,6 +642,7 @@ public class GameApp extends Application {
         game = null;
         game = new Game(parent);
         game.play();
+        game.inVis();
     }
     public static void main(String[] args) {
         Application.launch();
