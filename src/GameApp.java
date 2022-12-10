@@ -3,6 +3,8 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -93,7 +95,7 @@ class Pond extends GameObject{
     Circle pond;
     GameText per;
     public Pond(){
-        int random = rand.nextInt(25)+10;
+        int random = rand.nextInt(25)+25;
         fill =random;
         per = new GameText(String.valueOf(fill));
         pond = new Circle(random,Color.BLUE);
@@ -245,7 +247,7 @@ class HeloBlade  extends GameObject{
         this.myRotation.setAngle(getMyRotation() + bladeSpeed);
     }
     public boolean maxMin(){
-        return bladeSpeed == 30 || bladeSpeed == 0;
+        return bladeSpeed == 30;
     }
 }
 class Helicopter extends GameObject{
@@ -270,7 +272,7 @@ class Helicopter extends GameObject{
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 25000;
+        fuel = 250000;
         water = 0;
         blade = new HeloBlade ();
         blade.setTranslateY(-50);
@@ -369,9 +371,12 @@ class Game extends Pane{
     ArrayList<Cloud> clouds = new ArrayList<>();
     ArrayList<Pond> ponds = new ArrayList<>();
     ArrayList<Lines> lines = new ArrayList<>();
-    public Game(Pane parent) {
+    popUp pop;
+
+    public Game(Pane parent, popUp pop) {
        heli = (Helicopter) parent.getChildren().get(4);
        populate(parent);
+       this.pop = pop;
     }
     public void play(){
         AnimationTimer loop = new AnimationTimer() {
@@ -415,6 +420,8 @@ class Game extends Pane{
                 }else{
                     heli.ontop3 = false;
                 }
+                pop.winOrLose();
+
 
             }
             public void deseed(){
@@ -438,9 +445,12 @@ class Game extends Pane{
                     ponds.get(1).seeded(clouds.get(2).deseed());
                 if(lines.get(2).Lac2)
                     ponds.get(2).seeded(clouds.get(2).deseed());
+
             }
+
         };
         loop.start();
+
     }
     public boolean isTop(Helicopter heli, Cloud cloud){
         return (heli.myTranslate.getX() > (cloud.myTranslate.getX() -
@@ -475,6 +485,13 @@ class Game extends Pane{
         lines.get(0).Visible();
         lines.get(1).Visible();
         lines.get(2).Visible();
+    }
+    public int pondAvg(){
+        int total = 0;
+        for (Pond pond : ponds) {
+            total += pond.fill;
+        }
+        return total/ponds.size();
     }
 }
 class Lines extends Pane{
@@ -554,20 +571,62 @@ class backGround extends Pane{
         this.getChildren().add(back);
     }
 }
+class popUp {
+    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "",
+            ButtonType.YES, ButtonType.NO);
+    GameApp x;
+
+    public popUp(GameApp x){
+       this.x = x;
+    }
+    public void winOrLose(){
+
+        if(x.heli.fuel < 0) {
+            pop.setContentText("Better luck next time!!!!, try again?");
+            pop.show();
+            pop.setOnHidden(evt -> {
+
+                if (pop.getResult() == ButtonType.YES) {
+                    x.init(x.root);
+                    x.start(x.root);
+                    pop.close();
+                }
+                if(pop.getResult() == ButtonType.NO) {
+                    System.exit(0);
+                }
+
+            });
+        }else if(x.game.pondAvg() >= 80 && x.heli.inHelipad() && !x.heli.ignition){
+            pop.setContentText("Great job!!!!, try again?");
+            pop.show();
+            pop.setOnHidden(evt -> {
+                if (pop.getResult() == ButtonType.YES) {
+                    x.init(x.root);
+                    x.start(x.root);
+                    pop.close();
+                }
+                if(pop.getResult() == ButtonType.NO) {
+                    System.exit(0);
+                }
+            });
+        }
+    }
+}
 public class GameApp extends Application {
     private static final int GAME_WIDTH = 800;
     private static final int GAME_HEIGHT = 800;
     Game game;
     Helicopter heli;
+    Pane root;
+    popUp pop;
     public void start(Stage primaryStage) {
 
-        Pane root = new Pane();
+        root = new Pane();
         root.setScaleY(-1);
 
 
         init(root);
-
-
+        pop = new popUp(this);
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT);
 
 
@@ -593,7 +652,7 @@ public class GameApp extends Application {
                 if(heli.inHelipad())
                     heli.ignition = !heli.ignition;
             }
-            if(e.getCode() == KeyCode.R) {
+            if(e.getCode() == KeyCode.R ) {
                 init(root);
                 start(root);
             }
@@ -640,7 +699,7 @@ public class GameApp extends Application {
     }
     public void start(Pane parent){
         game = null;
-        game = new Game(parent);
+        game = new Game(parent, pop);
         game.play();
         game.inVis();
     }
