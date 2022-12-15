@@ -10,10 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
@@ -22,7 +19,6 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
-
 interface Updatable {
     void update();
 }
@@ -120,6 +116,7 @@ class Pond extends GameObject{
 }
 class Cloud extends GameObject{
     Random rand = new Random();
+    boolean oddFive;
     Circle cloud;
     int seed;
     GameText per;
@@ -127,6 +124,7 @@ class Cloud extends GameObject{
     boolean outOfB;
     double windSpeed;
     public Cloud(){
+        oddFive = false;
         r = rand.nextInt(50)+30;
         cloud = new Circle(r,Color.WHITE);
         seed = 0;
@@ -166,9 +164,16 @@ class Cloud extends GameObject{
     }
     public void restart(){
         outOfB = false;
+        seed = 0;
+        cloud.setOpacity(.8);
         cloud.setRadius(rand.nextInt(50)+30);
-        this.myTranslate.setX(-r);
-        this.myTranslate.setY(rand.nextInt(550)+200);
+        if(oddFive){
+            this.myTranslate.setX((rand.nextInt(300)+50)*(-1));
+            this.myTranslate.setY(rand.nextInt(550)+200);
+        }else {
+            this.myTranslate.setX(-r);
+            this.myTranslate.setY(rand.nextInt(550) + 200);
+        }
 
         windSpeed = rand.nextDouble(2)+0.5;
 
@@ -255,7 +260,7 @@ class Helicopter extends GameObject{
     double currSpeedY,currSpeedX, vel;
     boolean ignition,off, starting, stopping,ready;
     GameText tfuel;
-    boolean ontop1,ontop2,ontop3;
+    boolean ontop1,ontop2,ontop3,ontop4,ontop5;
     HeloBlade blade;
     public Helicopter(){
         super();
@@ -269,10 +274,12 @@ class Helicopter extends GameObject{
         ontop1 = false;
         ontop2 = false;
         ontop3 = false;
+        ontop4 = false;
+        ontop5 = false;
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 250000;
+        fuel = 250;
         water = 0;
         blade = new HeloBlade ();
         blade.setTranslateY(-50);
@@ -365,7 +372,7 @@ class Helicopter extends GameObject{
     }
 
 }
-class Game extends Pane{
+class Game {
 
     Helicopter heli;
     ArrayList<Cloud> clouds = new ArrayList<>();
@@ -379,10 +386,14 @@ class Game extends Pane{
        this.pop = pop;
     }
     public void play(){
+        clouds.get(3).oddFive = true;
+        clouds.get(4).oddFive = true;
         AnimationTimer loop = new AnimationTimer() {
             int count = 0;
 
             public void handle(long now) {
+                clouds.get(3).cloud.setFill(Color.GREEN);
+                clouds.get(4).cloud.setFill(Color.PINK);
                 count++;
                 if(count % 5 == 1) {
                     heli.update();
@@ -392,15 +403,23 @@ class Game extends Pane{
                     clouds.get(0).update();
                     clouds.get(1).update();
                     clouds.get(2).update();
+                    clouds.get(3).update();
+                    clouds.get(4).update();
                     if(clouds.get(0).outOfB)
                         clouds.get(0).restart();
                     if(clouds.get(1).outOfB)
                         clouds.get(1).restart();
                     if(clouds.get(2).outOfB)
                         clouds.get(2).restart();
+                    if(clouds.get(3).outOfB)
+                        clouds.get(3).restart();
+                    if(clouds.get(4).outOfB)
+                        clouds.get(4).restart();
                     lines.get(0).update();
                     lines.get(1).update();
                     lines.get(2).update();
+                    lines.get(3).update();
+                    lines.get(4).update();
                 }
                 if(count % 60 == 1) {
                     deseed();
@@ -419,6 +438,16 @@ class Game extends Pane{
                     heli.ontop3 = true;
                 }else{
                     heli.ontop3 = false;
+                }
+                if(isTop(heli,clouds.get(3))){
+                    heli.ontop4 = true;
+                }else{
+                    heli.ontop4 = false;
+                }
+                if(isTop(heli,clouds.get(4))){
+                    heli.ontop5 = true;
+                }else{
+                    heli.ontop5 = false;
                 }
                 pop.winOrLose();
 
@@ -475,16 +504,25 @@ class Game extends Pane{
                 .getChildren().get(1)));
         clouds.add(((Cloud)((Pane)parent.getChildren().get(3))
                 .getChildren().get(2)));
+        clouds.add(((Cloud)((Pane)parent.getChildren().get(3))
+                .getChildren().get(3)));
+        clouds.add(((Cloud)((Pane)parent.getChildren().get(3))
+                .getChildren().get(4)));
         lines.add(new Lines(ponds,clouds.get(0)));
         lines.add(new Lines(ponds,clouds.get(1)));
         lines.add(new Lines(ponds,clouds.get(2)));
-        parent.getChildren().addAll(lines.get(0),lines.get(1),lines.get(2));
+        lines.add(new Lines(ponds,clouds.get(3)));
+        lines.add(new Lines(ponds,clouds.get(4)));
+        parent.getChildren().addAll(lines.get(0),lines.get(1),lines.get(2),
+                lines.get(3),lines.get(4));
 
     }
     public void inVis(){
         lines.get(0).Visible();
         lines.get(1).Visible();
         lines.get(2).Visible();
+        lines.get(3).Visible();
+        lines.get(4).Visible();
     }
     public int pondAvg(){
         int total = 0;
@@ -666,6 +704,12 @@ public class GameApp extends Application {
                 if(heli.ontop3){
                     ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(2)).seed();
                 }
+                if(heli.ontop4){
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(3)).seed();
+                }
+                if(heli.ontop5){
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(4)).seed();
+                }
             }
             if(e.getCode() == KeyCode.D){
                 game.inVis();
@@ -690,8 +734,9 @@ public class GameApp extends Application {
         Helipad pad = new Helipad();
         Helicopter boom = new Helicopter();
         backGround back = new backGround();
+
         root.getChildren().addAll(back,pad,new Pane(new Pond(),new Pond(),new Pond()),
-                new Pane(new Cloud(),new Cloud(),new Cloud()),boom);
+                new Pane(new Cloud(),new Cloud(),new Cloud(),new Cloud(),new Cloud()),boom);
 
         boom.translate(400,50);
         boom.setPivot(400,50);
