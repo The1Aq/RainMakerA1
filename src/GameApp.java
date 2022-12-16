@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -18,6 +20,8 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 interface Updatable {
@@ -49,6 +53,7 @@ abstract class GameObject extends Group implements Updatable {
         myScale.setX(myScale.getX() + x);
         myScale.setY(myScale.getY() + y);
     }
+
 
     public double getMyRotation() {
         return myRotation.getAngle();
@@ -261,8 +266,12 @@ class HeloBlade  extends GameObject{
     public HeloBlade (){
 
         Rectangle blade1 = new Rectangle(5,100,Color.GHOSTWHITE);
+        Rectangle blade2 = new Rectangle(5,100,Color.GHOSTWHITE);
+        add(blade2);
         add(blade1);
-        myRotation.setPivotY(50+ myTranslate.getY());
+        blade2.setRotate(90);
+        myRotation.setPivotY(50 + myTranslate.getY());
+        myRotation.setPivotX(2.5 + myTranslate.getX());
         bladeSpeed = 0;
         on = false;
 
@@ -306,7 +315,7 @@ class Helicopter extends GameObject{
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 250;
+        fuel = 1500;
         water = 0;
         blade = new HeloBlade ();
         blade.setTranslateY(-50);
@@ -398,9 +407,10 @@ class Helicopter extends GameObject{
                 && this.myTranslate.getY() < (110) && this.myTranslate.getY() > 10;
     }
 
+
 }
 class Game {
-
+    music mus = new music();
     Helicopter heli;
     ArrayList<Cloud> clouds = new ArrayList<>();
     ArrayList<Pond> ponds = new ArrayList<>();
@@ -411,6 +421,7 @@ class Game {
        heli = (Helicopter) parent.getChildren().get(4);
        populate(parent);
        this.pop = pop;
+       mus.playBack();
     }
     public void play(){
         clouds.get(3).oddFive = true;
@@ -419,34 +430,31 @@ class Game {
             int count = 0;
 
             public void handle(long now) {
-                clouds.get(3).cloud.setFill(Color.GREEN);
-                clouds.get(4).cloud.setFill(Color.PINK);
                 count++;
                 if(count % 5 == 1) {
                     heli.update();
                     heli.rotate(heli.getMyRotation());
                 }
+                if(heli.fuel < 0)
+                    mus.fail();
+
+
+                if(heli.fuel < 1000){
+                    mus.runningLow();
+                }else{
+                    mus.playBack();
+                }
+
                 if(count % 10 == 1 ){
-                    clouds.get(0).update();
-                    clouds.get(1).update();
-                    clouds.get(2).update();
-                    clouds.get(3).update();
-                    clouds.get(4).update();
-                    if(clouds.get(0).outOfB)
-                        clouds.get(0).restart();
-                    if(clouds.get(1).outOfB)
-                        clouds.get(1).restart();
-                    if(clouds.get(2).outOfB)
-                        clouds.get(2).restart();
-                    if(clouds.get(3).outOfB)
-                        clouds.get(3).restart();
-                    if(clouds.get(4).outOfB)
-                        clouds.get(4).restart();
-                    lines.get(0).update();
-                    lines.get(1).update();
-                    lines.get(2).update();
-                    lines.get(3).update();
-                    lines.get(4).update();
+                    for (Cloud cloud : clouds) {
+                        cloud.update();
+                        if(cloud.outOfB)
+                            cloud.restart();
+                    }
+                    for(Lines line : lines){
+                        line.update();
+                    }
+
                 }
                 if(count % 60 == 1) {
                     deseed();
@@ -632,6 +640,34 @@ class backGround extends Pane{
         back.setFitHeight(800);
         back.setFitWidth(800);
         this.getChildren().add(back);
+    }
+}
+class music{
+    String mus1 = "BackGround.mp3";
+    String mus2 = "Running.mp3";
+    String fall = "falling.mp3";
+    Media background = new Media(new File(mus1).toURI().toString());
+    Media running = new Media(new File(mus2).toURI().toString());
+    Media falling = new Media(new File(fall).toURI().toString());
+    MediaPlayer player;
+    MediaPlayer player2;
+    MediaPlayer player3;
+    public music(){
+        player = new MediaPlayer(background);
+        player2 = new MediaPlayer(running);
+        player3 = new MediaPlayer(falling);
+    }
+    public void playBack(){
+        player.play();
+    }
+    public void runningLow(){
+        player.setMute(true);
+        player2.play();
+    }
+    public void fail(){
+        player.setMute(true);
+        player2.setMute(true);
+        player3.play();
     }
 }
 class popUp {

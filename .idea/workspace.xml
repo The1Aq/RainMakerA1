@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="added 2 new clouds with random spawn timers">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Fixed ponds not colliding with each other">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -233,7 +233,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671143937740</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Fixed ponds not colliding with each other">
+      <created>1671149919866</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1671149919866</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -248,7 +255,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Try" />
     <MESSAGE value="First Draft before implementing GIT" />
     <MESSAGE value="implemented the movement in y dirrection" />
     <MESSAGE value="Added a pivot to the heli" />
@@ -273,6 +279,7 @@
     <MESSAGE value="Fix de seething of multiple clouds." />
     <MESSAGE value="Added the win / lose screen" />
     <MESSAGE value="added 2 new clouds with random spawn timers" />
-    <option name="LAST_COMMIT_MESSAGE" value="added 2 new clouds with random spawn timers" />
+    <MESSAGE value="Fixed ponds not colliding with each other" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed ponds not colliding with each other" />
   </component>
 </project>
