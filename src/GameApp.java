@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -85,18 +86,27 @@ class GameText extends GameObject {
     }
 }
 class Pond extends GameObject{
-
+    static ArrayList<Point2D> Loc = new ArrayList<>();
     int fill;
     Random rand = new Random();
     Circle pond;
+    int x,y;
+    int random;
     GameText per;
     public Pond(){
-        int random = rand.nextInt(25)+25;
-        fill =random;
+        x = rand.nextInt(650)+100;
+        y = rand.nextInt(350)+200;
+        random = rand.nextInt(25)+25;
+        while(OntopOfEachOther()){
+            x = rand.nextInt(650)+100;
+            y = rand.nextInt(350)+200;
+        }
+        Loc.add(new Point2D(x,y));
+        fill =50;
         per = new GameText(String.valueOf(fill));
         pond = new Circle(random,Color.BLUE);
         add(pond);
-        this.translate(rand.nextInt(650)+100,rand.nextInt(350)+200);
+        this.translate(x,y);
         per = new GameText(fill + "%");
         add(per);
         per.setTranslateX(-10);
@@ -112,6 +122,23 @@ class Pond extends GameObject{
             }
         }
 
+    }
+    public boolean OntopOfEachOther(){
+        if(Loc.size() == 0){
+            return false;
+        }else if(Loc.size() == 1){
+            return (!(x > Loc.get(0).getY() + 80) && !(x < Loc.get(0).getX() - 80)) ||
+                    (!(y > Loc.get(0).getY() + 80) && !(y < Loc.get(0).getY() - 80));
+        }else if(Loc.size() == 2){
+            if((x > Loc.get(0).getY() + 80 || x < Loc.get(0).getX() - 80) &&
+                    (y > Loc.get(0).getY() + 80 || y < Loc.get(0).getY() - 80)){
+                return (!(x > Loc.get(1).getY() + 80) && !(x < Loc.get(1).getX() - 80)) ||
+                        (!(y > Loc.get(1).getY() + 80) && !(y < Loc.get(1).getY() - 80));
+            }else{
+                return true;
+            }
+        }else
+            return true;
     }
 }
 class Cloud extends GameObject{
@@ -460,14 +487,12 @@ class Game {
                     ponds.get(1).seeded(clouds.get(0).deseed());
                 if(lines.get(0).Lac2)
                     ponds.get(2).seeded(clouds.get(0).deseed());
-
                 if(lines.get(1).Lac0)
                     ponds.get(0).seeded(clouds.get(1).deseed());
                 if(lines.get(1).Lac1)
                     ponds.get(1).seeded(clouds.get(1).deseed());
                 if(lines.get(1).Lac2)
                     ponds.get(2).seeded(clouds.get(1).deseed());
-
                 if(lines.get(2).Lac0)
                     ponds.get(0).seeded(clouds.get(2).deseed());
                 if(lines.get(2).Lac1)
@@ -561,7 +586,7 @@ class Lines extends Pane{
         line2.setEndX(this.c.myTranslate.getX());
         line2.setEndY(this.c.myTranslate.getY());
         if(pInRange(this.ponds.get(0), line0)) {
-            line0.setStroke(Color.BLACK);
+            line0.setStroke(Color.WHITE);
             Lac0 = true;
         }
         else {
@@ -569,7 +594,7 @@ class Lines extends Pane{
             Lac0 = false;
         }
         if(pInRange(this.ponds.get(1), line1)) {
-            line1.setStroke(Color.BLACK);
+            line1.setStroke(Color.WHITE);
             Lac1 = true;
         }
         else {
@@ -577,7 +602,7 @@ class Lines extends Pane{
             Lac1 = false;
         }
         if(pInRange(this.ponds.get(2), line2)) {
-            line2.setStroke(Color.BLACK);
+            line2.setStroke(Color.WHITE);
             Lac2 = true;
         }
         else {
@@ -691,6 +716,7 @@ public class GameApp extends Application {
                     heli.ignition = !heli.ignition;
             }
             if(e.getCode() == KeyCode.R ) {
+                Pond.Loc.clear();
                 init(root);
                 start(root);
             }
