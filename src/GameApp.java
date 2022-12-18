@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,7 +20,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
@@ -95,11 +93,12 @@ class Pond extends GameObject{
     static ArrayList<Point2D> Loc = new ArrayList<>();
     int fill;
     Random rand = new Random();
-    Circle pond;
+    BezierOval pond;
     int x,y;
     int random;
     GameText per;
     public Pond(){
+        pond = new BezierOval(true);
         x = rand.nextInt(650)+100;
         y = rand.nextInt(350)+200;
         random = rand.nextInt(10)+25;
@@ -110,7 +109,7 @@ class Pond extends GameObject{
         Loc.add(new Point2D(x,y));
         fill = rand.nextInt(10)+15;
         per = new GameText(String.valueOf(fill));
-        pond = new Circle(random,Color.BLUE);
+        pond.setFill(Color.BLUE);
         add(pond);
         this.translate(x,y);
         per = new GameText(fill + "%");
@@ -148,6 +147,7 @@ class Pond extends GameObject{
 }
 class BezierOval  extends Path {
     Ellipse x = new Ellipse(50,25);
+    Ellipse y ;
     Random rand = new Random();
     public BezierOval (){
 
@@ -213,6 +213,43 @@ class BezierOval  extends Path {
 
         this.setStroke(Color.BLACK);
 
+    }
+    public BezierOval(boolean x){
+        if(x) {
+            y = new Ellipse(rand.nextInt(10) + 10, rand.nextInt(30) + 15);
+            MoveTo start = new MoveTo(0, y.getRadiusY());
+            QuadCurveTo curve1 = new QuadCurveTo();
+            QuadCurveTo curve2 = new QuadCurveTo();
+            QuadCurveTo curve3 = new QuadCurveTo();
+            QuadCurveTo curve4 = new QuadCurveTo();
+
+            curve1.setX(y.getRadiusX());
+            curve1.setY(0);
+            curve1.setControlX(0);
+            curve1.setControlX(0);
+
+            curve2.setX(0);
+            curve2.setY(-y.getRadiusY());
+            curve2.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(.785) - .785));
+            curve2.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(.785) - .785));
+
+            curve3.setX(-y.getRadiusX());
+            curve3.setY(0);
+            curve3.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(1.57) - 1.57));
+            curve3.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(1.57) - 1.57));
+
+            curve4.setX(0);
+            curve4.setY(y.getRadiusY());
+            curve4.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(1.57) - 3.14));
+            curve4.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(1.57) - 3.14));
+
+            this.getElements().add(start);
+            this.getElements().add(curve1);
+            this.getElements().add(curve2);
+            this.getElements().add(curve3);
+            this.getElements().add(curve4);
+            this.setStroke(Color.BLACK);
+        }
     }
 }
 class Cloud extends GameObject{
@@ -698,7 +735,7 @@ class Lines extends Pane{
     public boolean pInRange(Pond p,Line line){
         double dis = Math.sqrt(Math.pow(line.getEndX()-line.getStartX(),2)
                 +Math.pow(line.getEndY()-line.getStartY(),2));
-        return dis < p.pond.getRadius() * 8;
+        return dis < p.pond.y.getRadiusY() * 8;
     }
 
 }
@@ -741,7 +778,7 @@ class music{
     }
 }
 class popUp {
-    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "kanye was right",
+    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "kanye was right!!!!",
             ButtonType.YES, ButtonType.NO);
     GameApp x;
 
