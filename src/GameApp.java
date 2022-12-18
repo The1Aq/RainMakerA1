@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -146,21 +147,68 @@ class Pond extends GameObject{
             return true;
     }
 }
+class BezierOval  extends Path {
+    Ellipse x;
+    public BezierOval (Ellipse x){
+        this.x = x;
+        QuadCurveTo  curve1 = new QuadCurveTo ();
+        QuadCurveTo curve2 = new QuadCurveTo();
+        QuadCurveTo curve3 = new QuadCurveTo();
+        QuadCurveTo curve4 = new QuadCurveTo();
+        MoveTo start = new MoveTo(0,x.getRadiusY());
+
+        curve1.setX(x.getRadiusX());
+        curve1.setY(0);
+        curve1.setControlX(x.getRadiusX()+20 * Math.cos(45));
+        curve1.setControlY(x.getRadiusY()+20 * Math.sin(45));
+
+        curve2.setX(0);
+        curve2.setY(-x.getRadiusY());
+        curve2.setControlX(x.getRadiusX()+20 * Math.cos(-45));
+        curve2.setControlY(-x.getRadiusY()+20 * Math.sin(-45));
+
+        curve3.setX(-x.getRadiusX());
+        curve3.setY(0);
+        curve3.setControlX(-x.getRadiusX()+20 * Math.cos(225));
+        curve3.setControlY(-x.getRadiusY()+20 * Math.sin(225));
+
+        curve4.setX(0);
+        curve4.setY(x.getRadiusY());
+        curve4.setControlX(-x.getRadiusX()+20 * Math.cos(135));
+        curve4.setControlY(x.getRadiusY()+20 * Math.sin(135));
+
+        this.getElements().add(start);
+        this.getElements().add(curve1);
+        this.getElements().add(curve2);
+        this.getElements().add(curve3);
+        this.getElements().add(curve4);
+        this.setStroke(Color.BLACK);
+
+    }
+}
 class Cloud extends GameObject{
     Random rand = new Random();
     boolean oddFive;
-    Circle cloud;
+    //Circle cloud;
+    Ellipse cloud;
+    BezierOval  x;
     int seed;
     GameText per;
     int r;
     boolean outOfB;
     double windSpeed;
     public Cloud(){
+        cloud = new Ellipse(rand.nextInt(50)+30,rand.nextInt(50)+10);
+        cloud.setFill(Color.WHITE);
+        x = new BezierOval (cloud);
+
+        x.setFill(Color.WHITE);
         oddFive = false;
         r = rand.nextInt(50)+30;
-        cloud = new Circle(r,Color.WHITE);
+        ///cloud = new Circle(r,Color.WHITE);
         seed = 0;
         add(cloud);
+        add(x);
         this.translate(rand.nextInt(750)+100,rand.nextInt(550)+200);
         per = new GameText(seed + "%");
         per.text.setFill(Color.BLUE);
@@ -198,7 +246,7 @@ class Cloud extends GameObject{
         outOfB = false;
         seed = 0;
         cloud.setOpacity(.8);
-        cloud.setRadius(rand.nextInt(50)+30);
+        //cloud.setRadius(rand.nextInt(50)+30);
         if(oddFive){
             this.myTranslate.setX((rand.nextInt(300)+50)*(-1));
             this.myTranslate.setY(rand.nextInt(550)+200);
@@ -671,7 +719,7 @@ class music{
     }
 }
 class popUp {
-    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "",
+    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "kanye was right",
             ButtonType.YES, ButtonType.NO);
     GameApp x;
 
