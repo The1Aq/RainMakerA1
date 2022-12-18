@@ -102,13 +102,13 @@ class Pond extends GameObject{
     public Pond(){
         x = rand.nextInt(650)+100;
         y = rand.nextInt(350)+200;
-        random = rand.nextInt(25)+25;
+        random = rand.nextInt(10)+25;
         while(OntopOfEachOther()){
             x = rand.nextInt(650)+100;
             y = rand.nextInt(350)+200;
         }
         Loc.add(new Point2D(x,y));
-        fill =50;
+        fill = rand.nextInt(10)+15;
         per = new GameText(String.valueOf(fill));
         pond = new Circle(random,Color.BLUE);
         add(pond);
@@ -118,7 +118,6 @@ class Pond extends GameObject{
         per.setTranslateX(-10);
 
     }
-
     public void seeded(int x){
         if(x >= 1){
             if(fill < 100) {
@@ -148,40 +147,70 @@ class Pond extends GameObject{
     }
 }
 class BezierOval  extends Path {
-    Ellipse x;
-    public BezierOval (Ellipse x){
-        this.x = x;
-        QuadCurveTo  curve1 = new QuadCurveTo ();
+    Ellipse x = new Ellipse(50,25);
+    Random rand = new Random();
+    public BezierOval (){
+
+        QuadCurveTo curve1 = new QuadCurveTo ();
         QuadCurveTo curve2 = new QuadCurveTo();
         QuadCurveTo curve3 = new QuadCurveTo();
         QuadCurveTo curve4 = new QuadCurveTo();
+        QuadCurveTo curve5 = new QuadCurveTo();
+        QuadCurveTo curve6 = new QuadCurveTo();
+        QuadCurveTo curve7 = new QuadCurveTo();
+        QuadCurveTo curve8 = new QuadCurveTo();
         MoveTo start = new MoveTo(0,x.getRadiusY());
 
-        curve1.setX(x.getRadiusX());
-        curve1.setY(0);
-        curve1.setControlX(x.getRadiusX()+20 * Math.cos(45));
-        curve1.setControlY(x.getRadiusY()+20 * Math.sin(45));
+        curve1.setX(x.getRadiusX() * Math.cos(45));
+        curve1.setY(x.getRadiusY() * Math.sin(45));
+        curve1.setControlX(x.getRadiusX()*1.5 * Math.cos(rand.nextDouble(.785)+.785));
+        curve1.setControlY(x.getRadiusY()*1.5 * Math.sin(rand.nextDouble(.785)+.785));
 
-        curve2.setX(0);
-        curve2.setY(-x.getRadiusY());
-        curve2.setControlX(x.getRadiusX()+20 * Math.cos(-45));
-        curve2.setControlY(-x.getRadiusY()+20 * Math.sin(-45));
+        curve2.setX(x.getRadiusX());
+        curve2.setY(0);
+        curve2.setControlX(x.getRadiusX()*1.5 * Math.sin(rand.nextDouble(.785)+.3));
+        curve2.setControlY(x.getRadiusY()*1.5 * Math.cos(rand.nextDouble(.785)+.3));
 
-        curve3.setX(-x.getRadiusX());
-        curve3.setY(0);
-        curve3.setControlX(-x.getRadiusX()+20 * Math.cos(225));
-        curve3.setControlY(-x.getRadiusY()+20 * Math.sin(225));
+        curve3.setX(x.getRadiusX() * Math.cos(-45));
+        curve3.setY(x.getRadiusY() * Math.sin(-45));
+        curve3.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-.3));
+        curve3.setControlY(x.getRadiusY()*1.5 * Math.sin(-rand.nextDouble(.785)-.3));
 
         curve4.setX(0);
-        curve4.setY(x.getRadiusY());
-        curve4.setControlX(-x.getRadiusX()+20 * Math.cos(135));
-        curve4.setControlY(x.getRadiusY()+20 * Math.sin(135));
+        curve4.setY(-x.getRadiusY());
+        curve4.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-.785));
+        curve4.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-.785));
+
+        curve5.setX(x.getRadiusX() * Math.cos(-90));
+        curve5.setY(x.getRadiusY() * Math.sin(-90));
+        curve5.setControlX(x.getRadiusX() * 1.5 * Math.cos(-rand.nextDouble(.785)-1.57));
+        curve5.setControlY(x.getRadiusY() * 1.5 * Math.sin(-rand.nextDouble(.785)-1.57));
+
+        curve6.setX(x.getRadiusX() * Math.cos(-135));
+        curve6.setY(x.getRadiusY() * Math.sin(-135));
+        curve6.setControlX(x.getRadiusX()*1.5 * Math.cos((-rand.nextDouble(.785)-2.35)));
+        curve6.setControlY(x.getRadiusY()*1.5 * Math.sin((-rand.nextDouble(.785)-2.35)));
+
+        curve7.setX(x.getRadiusX() * Math.cos(-180));
+        curve7.setY(x.getRadiusY() * Math.sin(-180));
+        curve7.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-3.14));
+        curve7.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-3.14));
+
+        curve8.setX(0);
+        curve8.setY(x.getRadiusY());
+        curve8.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-3.92));
+        curve8.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-3.92));
 
         this.getElements().add(start);
         this.getElements().add(curve1);
         this.getElements().add(curve2);
         this.getElements().add(curve3);
         this.getElements().add(curve4);
+        this.getElements().add(curve5);
+        this.getElements().add(curve6);
+        this.getElements().add(curve7);
+        this.getElements().add(curve8);
+
         this.setStroke(Color.BLACK);
 
     }
@@ -189,26 +218,19 @@ class BezierOval  extends Path {
 class Cloud extends GameObject{
     Random rand = new Random();
     boolean oddFive;
-    //Circle cloud;
-    Ellipse cloud;
-    BezierOval  x;
+
+    BezierOval cloud;
     int seed;
     GameText per;
-    int r;
+    int r = 50;
     boolean outOfB;
     double windSpeed;
     public Cloud(){
-        cloud = new Ellipse(rand.nextInt(50)+30,rand.nextInt(50)+10);
+        cloud = new BezierOval ();
         cloud.setFill(Color.WHITE);
-        x = new BezierOval (cloud);
-
-        x.setFill(Color.WHITE);
         oddFive = false;
-        r = rand.nextInt(50)+30;
-        ///cloud = new Circle(r,Color.WHITE);
         seed = 0;
         add(cloud);
-        add(x);
         this.translate(rand.nextInt(750)+100,rand.nextInt(550)+200);
         per = new GameText(seed + "%");
         per.text.setFill(Color.BLUE);
@@ -363,7 +385,7 @@ class Helicopter extends GameObject{
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 1500;
+        fuel = 10;
         water = 0;
         blade = new HeloBlade ();
         blade.setTranslateY(-50);
@@ -466,10 +488,10 @@ class Game {
     popUp pop;
 
     public Game(Pane parent, popUp pop) {
-       heli = (Helicopter) parent.getChildren().get(4);
-       populate(parent);
-       this.pop = pop;
-       mus.playBack();
+        heli = (Helicopter) parent.getChildren().get(4);
+        populate(parent);
+        this.pop = pop;
+        mus.playBack();
     }
     public void play(){
         clouds.get(3).oddFive = true;
@@ -706,16 +728,16 @@ class music{
         player3 = new MediaPlayer(falling);
     }
     public void playBack(){
-        player.play();
+        //player.play();
     }
     public void runningLow(){
         player.setMute(true);
-        player2.play();
+        //player2.play();
     }
     public void fail(){
         player.setMute(true);
         player2.setMute(true);
-        player3.play();
+       // player3.play();
     }
 }
 class popUp {
@@ -724,7 +746,7 @@ class popUp {
     GameApp x;
 
     public popUp(GameApp x){
-       this.x = x;
+        this.x = x;
     }
     public void winOrLose(){
 
@@ -734,6 +756,7 @@ class popUp {
             pop.setOnHidden(evt -> {
 
                 if (pop.getResult() == ButtonType.YES) {
+                    Pond.Loc.clear();
                     x.init(x.root);
                     x.start(x.root);
                     pop.close();
@@ -748,6 +771,7 @@ class popUp {
             pop.show();
             pop.setOnHidden(evt -> {
                 if (pop.getResult() == ButtonType.YES) {
+                    Pond.Loc.clear();
                     x.init(x.root);
                     x.start(x.root);
                     pop.close();
