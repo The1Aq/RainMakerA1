@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Added the random factor for the curves">
+    <list default="true" id="5b598dfd-1f70-4027-ba9a-da0e24989e65" name="Changes" comment="Added curves to the ponds">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameApp.java" afterDir="false" />
     </list>
@@ -261,7 +261,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671353667145</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Added curves to the ponds">
+      <created>1671365074650</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1671365074650</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -276,7 +283,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added the option to start ignition and restart as well as a template for the new movement." />
     <MESSAGE value="Fixed the movement now its perfect !!!!!" />
     <MESSAGE value="added text to heli" />
     <MESSAGE value="Fixed the restart and clouds and pond" />
@@ -301,6 +307,7 @@
     <MESSAGE value="Added a backGround music and a ruinnig out of fuel music" />
     <MESSAGE value="added the bezier curves!!!!!!!!!" />
     <MESSAGE value="Added the random factor for the curves" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the random factor for the curves" />
+    <MESSAGE value="Added curves to the ponds" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added curves to the ponds" />
   </component>
 </project>

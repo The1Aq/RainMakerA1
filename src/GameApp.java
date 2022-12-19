@@ -90,6 +90,9 @@ class GameText extends GameObject {
     }
 }
 class Pond extends GameObject{
+    /*
+    pond logic
+     */
     static ArrayList<Point2D> Loc = new ArrayList<>();
     int fill;
     Random rand = new Random();
@@ -118,7 +121,7 @@ class Pond extends GameObject{
 
     }
     public void seeded(int x){
-        if(x >= 1){
+        if(x >= 20){
             if(fill < 100) {
                 fill++;
                 per.setText(fill+ "%");
@@ -131,13 +134,18 @@ class Pond extends GameObject{
         if(Loc.size() == 0){
             return false;
         }else if(Loc.size() == 1){
-            return (!(x > Loc.get(0).getY() + 80) && !(x < Loc.get(0).getX() - 80)) ||
-                    (!(y > Loc.get(0).getY() + 80) && !(y < Loc.get(0).getY() - 80));
+            return (!(x > Loc.get(0).getY() + 80) &&
+                    !(x < Loc.get(0).getX() - 80)) ||
+                    (!(y > Loc.get(0).getY() + 80) &&
+                            !(y < Loc.get(0).getY() - 80));
         }else if(Loc.size() == 2){
             if((x > Loc.get(0).getY() + 80 || x < Loc.get(0).getX() - 80) &&
-                    (y > Loc.get(0).getY() + 80 || y < Loc.get(0).getY() - 80)){
-                return (!(x > Loc.get(1).getY() + 80) && !(x < Loc.get(1).getX() - 80)) ||
-                        (!(y > Loc.get(1).getY() + 80) && !(y < Loc.get(1).getY() - 80));
+                    (y > Loc.get(0).getY() + 80 ||
+                            y < Loc.get(0).getY() - 80)){
+                return (!(x > Loc.get(1).getY() + 80) &&
+                        !(x < Loc.get(1).getX() - 80)) ||
+                        (!(y > Loc.get(1).getY() + 80) &&
+                                !(y < Loc.get(1).getY() - 80));
             }else{
                 return true;
             }
@@ -146,11 +154,14 @@ class Pond extends GameObject{
     }
 }
 class BezierOval  extends Path {
-    Ellipse x = new Ellipse(50,25);
+    /*
+    This class creates the curves for ponds and clouds and blimp
+     */
+    Ellipse clouds;
     Ellipse y ;
     Random rand = new Random();
     public BezierOval (){
-
+        clouds =  new Ellipse(50,25);
         QuadCurveTo curve1 = new QuadCurveTo ();
         QuadCurveTo curve2 = new QuadCurveTo();
         QuadCurveTo curve3 = new QuadCurveTo();
@@ -159,47 +170,63 @@ class BezierOval  extends Path {
         QuadCurveTo curve6 = new QuadCurveTo();
         QuadCurveTo curve7 = new QuadCurveTo();
         QuadCurveTo curve8 = new QuadCurveTo();
-        MoveTo start = new MoveTo(0,x.getRadiusY());
+        MoveTo start = new MoveTo(0, clouds.getRadiusY());
 
-        curve1.setX(x.getRadiusX() * Math.cos(45));
-        curve1.setY(x.getRadiusY() * Math.sin(45));
-        curve1.setControlX(x.getRadiusX()*1.5 * Math.cos(rand.nextDouble(.785)+.785));
-        curve1.setControlY(x.getRadiusY()*1.5 * Math.sin(rand.nextDouble(.785)+.785));
+        curve1.setX(clouds.getRadiusX() * Math.cos(45));
+        curve1.setY(clouds.getRadiusY() * Math.sin(45));
+        curve1.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos(rand.nextDouble(.785)+.785));
+        curve1.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin(rand.nextDouble(.785)+.785));
 
-        curve2.setX(x.getRadiusX());
+        curve2.setX(clouds.getRadiusX());
         curve2.setY(0);
-        curve2.setControlX(x.getRadiusX()*1.5 * Math.sin(rand.nextDouble(.785)+.3));
-        curve2.setControlY(x.getRadiusY()*1.5 * Math.cos(rand.nextDouble(.785)+.3));
+        curve2.setControlX(clouds.getRadiusX()*1.5 *
+                Math.sin(rand.nextDouble(.785)+.3));
+        curve2.setControlY(clouds.getRadiusY()*1.5 *
+                Math.cos(rand.nextDouble(.785)+.3));
 
-        curve3.setX(x.getRadiusX() * Math.cos(-45));
-        curve3.setY(x.getRadiusY() * Math.sin(-45));
-        curve3.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-.3));
-        curve3.setControlY(x.getRadiusY()*1.5 * Math.sin(-rand.nextDouble(.785)-.3));
+        curve3.setX(clouds.getRadiusX() * Math.cos(-45));
+        curve3.setY(clouds.getRadiusY() * Math.sin(-45));
+        curve3.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos(-rand.nextDouble(.785)-.3));
+        curve3.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin(-rand.nextDouble(.785)-.3));
 
         curve4.setX(0);
-        curve4.setY(-x.getRadiusY());
-        curve4.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-.785));
-        curve4.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-.785));
+        curve4.setY(-clouds.getRadiusY());
+        curve4.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos(-rand.nextDouble(.785)-.785));
+        curve4.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin(-rand.nextDouble(.785)-.785));
 
-        curve5.setX(x.getRadiusX() * Math.cos(-90));
-        curve5.setY(x.getRadiusY() * Math.sin(-90));
-        curve5.setControlX(x.getRadiusX() * 1.5 * Math.cos(-rand.nextDouble(.785)-1.57));
-        curve5.setControlY(x.getRadiusY() * 1.5 * Math.sin(-rand.nextDouble(.785)-1.57));
+        curve5.setX(clouds.getRadiusX() * Math.cos(-90));
+        curve5.setY(clouds.getRadiusY() * Math.sin(-90));
+        curve5.setControlX(clouds.getRadiusX() * 1.5 *
+                Math.cos(-rand.nextDouble(.785)-1.57));
+        curve5.setControlY(clouds.getRadiusY() * 1.5 *
+                Math.sin(-rand.nextDouble(.785)-1.57));
 
-        curve6.setX(x.getRadiusX() * Math.cos(-135));
-        curve6.setY(x.getRadiusY() * Math.sin(-135));
-        curve6.setControlX(x.getRadiusX()*1.5 * Math.cos((-rand.nextDouble(.785)-2.35)));
-        curve6.setControlY(x.getRadiusY()*1.5 * Math.sin((-rand.nextDouble(.785)-2.35)));
+        curve6.setX(clouds.getRadiusX() * Math.cos(-135));
+        curve6.setY(clouds.getRadiusY() * Math.sin(-135));
+        curve6.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos((-rand.nextDouble(.785)-2.35)));
+        curve6.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin((-rand.nextDouble(.785)-2.35)));
 
-        curve7.setX(x.getRadiusX() * Math.cos(-180));
-        curve7.setY(x.getRadiusY() * Math.sin(-180));
-        curve7.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-3.14));
-        curve7.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-3.14));
+        curve7.setX(clouds.getRadiusX() * Math.cos(-180));
+        curve7.setY(clouds.getRadiusY() * Math.sin(-180));
+        curve7.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos(-rand.nextDouble(.785)-3.14));
+        curve7.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin(-rand.nextDouble(.785)-3.14));
 
         curve8.setX(0);
-        curve8.setY(x.getRadiusY());
-        curve8.setControlX(x.getRadiusX()*1.5 * Math.cos(-rand.nextDouble(.785)-3.92));
-        curve8.setControlY(x.getRadiusY()*1.5  * Math.sin(-rand.nextDouble(.785)-3.92));
+        curve8.setY(clouds.getRadiusY());
+        curve8.setControlX(clouds.getRadiusX()*1.5 *
+                Math.cos(-rand.nextDouble(.785)-3.92));
+        curve8.setControlY(clouds.getRadiusY()*1.5 *
+                Math.sin(-rand.nextDouble(.785)-3.92));
 
         this.getElements().add(start);
         this.getElements().add(curve1);
@@ -216,7 +243,8 @@ class BezierOval  extends Path {
     }
     public BezierOval(boolean x){
         if(x) {
-            y = new Ellipse(rand.nextInt(10) + 10, rand.nextInt(30) + 15);
+            y = new Ellipse(rand.nextInt(10) + 10,
+                    rand.nextInt(30) + 15);
             MoveTo start = new MoveTo(0, y.getRadiusY());
             QuadCurveTo curve1 = new QuadCurveTo();
             QuadCurveTo curve2 = new QuadCurveTo();
@@ -230,18 +258,24 @@ class BezierOval  extends Path {
 
             curve2.setX(0);
             curve2.setY(-y.getRadiusY());
-            curve2.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(.785) - .785));
-            curve2.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(.785) - .785));
+            curve2.setControlX(y.getRadiusX() * 2 *
+                    Math.cos(-rand.nextDouble(.785) - .785));
+            curve2.setControlY(y.getRadiusY() * 2 *
+                    Math.sin(-rand.nextDouble(.785) - .785));
 
             curve3.setX(-y.getRadiusX());
             curve3.setY(0);
-            curve3.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(1.57) - 1.57));
-            curve3.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(1.57) - 1.57));
+            curve3.setControlX(y.getRadiusX() * 2 *
+                    Math.cos(-rand.nextDouble(1.57) - 1.57));
+            curve3.setControlY(y.getRadiusY() * 2 *
+                    Math.sin(-rand.nextDouble(1.57) - 1.57));
 
             curve4.setX(0);
             curve4.setY(y.getRadiusY());
-            curve4.setControlX(y.getRadiusX() * 2 * Math.cos(-rand.nextDouble(1.57) - 3.14));
-            curve4.setControlY(y.getRadiusY() * 2 * Math.sin(-rand.nextDouble(1.57) - 3.14));
+            curve4.setControlX(y.getRadiusX() * 2 *
+                    Math.cos(-rand.nextDouble(1.57) - 3.14));
+            curve4.setControlY(y.getRadiusY() * 2 *
+                    Math.sin(-rand.nextDouble(1.57) - 3.14));
 
             this.getElements().add(start);
             this.getElements().add(curve1);
@@ -249,13 +283,81 @@ class BezierOval  extends Path {
             this.getElements().add(curve3);
             this.getElements().add(curve4);
             this.setStroke(Color.BLACK);
+        }else{
+            y = new Ellipse(51,29);
+            MoveTo start = new MoveTo(y.getRadiusX(), 0);
+            QuadCurveTo curve1 = new QuadCurveTo();
+            QuadCurveTo curve2 = new QuadCurveTo();
+            QuadCurveTo curve3 = new QuadCurveTo();
+            QuadCurveTo curve4 = new QuadCurveTo();
+            QuadCurveTo curve5 = new QuadCurveTo();
+            QuadCurveTo curve6 = new QuadCurveTo();
+            QuadCurveTo curve7 = new QuadCurveTo();
+            QuadCurveTo curve8 = new QuadCurveTo();
+
+            curve1.setX(y.getRadiusX());
+            curve1.setY(0);
+            curve1.setControlX(0);
+            curve1.setControlY(10);
+
+            curve2.setX(-y.getRadiusX());
+            curve2.setY(0);
+            curve2.setControlX(0);
+            curve2.setControlY(-10);
+
+            curve3.setX(y.getRadiusX());
+            curve3.setY(0);
+            curve3.setControlY(20);
+            curve3.setControlX(0);
+
+            curve4.setX(-y.getRadiusX());
+            curve4.setY(0);
+            curve4.setControlY(-20);
+            curve4.setControlX(0);
+
+            curve7.setX(y.getRadiusX());
+            curve7.setY(0);
+            curve7.setControlY(40);
+            curve7.setControlX(0);
+
+            curve8.setX(-y.getRadiusX());
+            curve8.setY(0);
+            curve8.setControlY(-40);
+            curve8.setControlX(0);
+
+            curve5.setX(y.getRadiusX());
+            curve5.setY(0);
+            curve5.setControlY(60);
+            curve5.setControlX(0);
+
+            curve6.setX(-y.getRadiusX());
+            curve6.setY(0);
+            curve6.setControlY(-60);
+            curve6.setControlX(0);
+
+
+            this.getElements().add(start);
+            this.getElements().add(curve1);
+            this.getElements().add(curve2);
+            this.getElements().add(curve3);
+            this.getElements().add(curve4);
+            this.getElements().add(curve5);
+            this.getElements().add(curve6);
+            this.getElements().add(curve7);
+            this.getElements().add(curve8);
+            this.setStroke(Color.BLACK);
+
+
         }
     }
 }
 class Cloud extends GameObject{
+    /*
+        The clouds were created using the curves and follows random patterns
+        this class holds the different method that belong to the clouds
+     */
     Random rand = new Random();
     boolean oddFive;
-
     BezierOval cloud;
     int seed;
     GameText per;
@@ -268,7 +370,8 @@ class Cloud extends GameObject{
         oddFive = false;
         seed = 0;
         add(cloud);
-        this.translate(rand.nextInt(750)+100,rand.nextInt(550)+200);
+        this.translate(rand.nextInt(750)+100,
+                rand.nextInt(550)+200);
         per = new GameText(seed + "%");
         per.text.setFill(Color.BLUE);
         add(per);
@@ -304,6 +407,7 @@ class Cloud extends GameObject{
     public void restart(){
         outOfB = false;
         seed = 0;
+        per.setText(seed +"%");
         cloud.setOpacity(.8);
         //cloud.setRadius(rand.nextInt(50)+30);
         if(oddFive){
@@ -314,7 +418,7 @@ class Cloud extends GameObject{
             this.myTranslate.setY(rand.nextInt(550) + 200);
         }
 
-        windSpeed = rand.nextDouble(2)+0.5;
+        windSpeed = rand.nextDouble(1)+0.5;
 
 
     }
@@ -386,7 +490,6 @@ class HeloBlade  extends GameObject{
     public void setLoc(Helicopter x){
         this.myTranslate = x.myTranslate;
     }
-
     public void update(){
         if(bladeSpeed <= 30 && on)
             bladeSpeed++;
@@ -399,6 +502,10 @@ class HeloBlade  extends GameObject{
     }
 }
 class Helicopter extends GameObject{
+    /*
+    it works and makes sense, the only thing is that the blades are not self
+    animated.
+     */
     int   fuel, water;
     double currSpeedY,currSpeedX, vel;
     boolean ignition,off, starting, stopping,ready;
@@ -422,7 +529,7 @@ class Helicopter extends GameObject{
         currSpeedX = 0;
         currSpeedY = 0;
         vel =0;
-        fuel = 10;
+        fuel = 25000;
         water = 0;
         blade = new HeloBlade ();
         blade.setTranslateY(-50);
@@ -477,13 +584,13 @@ class Helicopter extends GameObject{
             off = true;
         }else if(ready && ignition ){
             if(vel < 1)
-                fuel -= 5;
+                fuel -= 1;
             else if (vel < 2) {
-                fuel -= 25;
+                fuel -= 10;
             }else if(vel < 3){
-                fuel -= 100;
+                fuel -= 20;
             }else{
-                fuel -= 150;
+                fuel -= 30;
             }
 
             if((int)getMyRotation() != 0) {
@@ -510,22 +617,79 @@ class Helicopter extends GameObject{
     }
     public boolean inHelipad(){
 
-        return this.myTranslate.getX() > (350) && this.myTranslate.getX() < (450)
-                && this.myTranslate.getY() < (110) && this.myTranslate.getY() > 10;
+        return this.myTranslate.getX() > (350) &&
+                this.myTranslate.getX() < (450)
+                && this.myTranslate.getY() < (110) &&
+                this.myTranslate.getY() > 10;
+    }
+    public void fuel(){
+        if(fuel-300 < 25000)
+            fuel += 300;
     }
 
+}
+class Blimp extends GameObject{
+    /*
+    Not and image but still nice
+     */
+    BezierOval wire;
+    Random rand = new Random();
+    int fuel;
+    int speed;
+    boolean outOB;
+    GameText text;
 
+    public Blimp(){
+        wire = new BezierOval(false);
+        wire.setFill(Color.GRAY);
+        add(wire);
+        outOB = false;
+        fuel = rand.nextInt(5000) + 5000;
+        text = new GameText(fuel+"");
+        text.text.setStroke(Color.YELLOW);
+        add(text);
+        text.setTranslateX(-10);
+        text.setTranslateY(10);
+        speed = 2;
+    }
+    public void defuel(){
+        if(fuel - 300 >=300)
+            fuel -= 300;
+
+    }
+    public void update(){
+        this.myTranslate.setX(this.myTranslate.getX() + speed);
+        if(this.myTranslate.getX() - 51 > 800)
+            outOB = true;
+        text.setText(fuel+"");
+
+    }
+    public void restart(){
+        outOB = false;
+        this.myTranslate.setX(-rand.nextInt(400) -400);
+        this.myTranslate.setY(rand.nextInt(600)+200);
+        fuel = rand.nextInt(5000) + 5000;
+        text.setText(fuel+"");
+
+
+    }
 }
 class Game {
-    music mus = new music();
+
+    /*
+        This Game class uses all the different resources from the game.
+     */
+    Music mus = new Music();
     Helicopter heli;
+    Blimp blimp;
     ArrayList<Cloud> clouds = new ArrayList<>();
     ArrayList<Pond> ponds = new ArrayList<>();
     ArrayList<Lines> lines = new ArrayList<>();
-    popUp pop;
+    PopUp pop;
 
-    public Game(Pane parent, popUp pop) {
-        heli = (Helicopter) parent.getChildren().get(4);
+    public Game(Pane parent, PopUp pop) {
+        heli = (Helicopter) parent.getChildren().get(5);
+        blimp = (Blimp) parent.getChildren().get(4);
         populate(parent);
         this.pop = pop;
         mus.playBack();
@@ -533,6 +697,7 @@ class Game {
     public void play(){
         clouds.get(3).oddFive = true;
         clouds.get(4).oddFive = true;
+
         AnimationTimer loop = new AnimationTimer() {
             int count = 0;
 
@@ -540,6 +705,7 @@ class Game {
                 count++;
                 if(count % 5 == 1) {
                     heli.update();
+                    blimp.update();
                     heli.rotate(heli.getMyRotation());
                 }
                 if(heli.fuel < 0)
@@ -551,7 +717,10 @@ class Game {
                 }else{
                     mus.playBack();
                 }
-
+                if(blimp.outOB){
+                    if(count % 200 == 0)
+                        blimp.restart();
+                }
                 if(count % 10 == 1 ){
                     for (Cloud cloud : clouds) {
                         cloud.update();
@@ -565,6 +734,12 @@ class Game {
                 }
                 if(count % 60 == 1) {
                     deseed();
+                }
+                if(isFuel(heli,blimp)){
+                    if(count % 20 == 0) {
+                        blimp.defuel();
+                        heli.fuel();
+                    }
                 }
                 if(isTop(heli,clouds.get(0))){
                     heli.ontop1 = true;
@@ -614,6 +789,18 @@ class Game {
                     ponds.get(1).seeded(clouds.get(2).deseed());
                 if(lines.get(2).Lac2)
                     ponds.get(2).seeded(clouds.get(2).deseed());
+                if(lines.get(3).Lac0)
+                    ponds.get(0).seeded(clouds.get(3).deseed());
+                if(lines.get(3).Lac1)
+                    ponds.get(1).seeded(clouds.get(3).deseed());
+                if(lines.get(3).Lac2)
+                    ponds.get(2).seeded(clouds.get(3).deseed());
+                if(lines.get(4).Lac0)
+                    ponds.get(0).seeded(clouds.get(4).deseed());
+                if(lines.get(4).Lac1)
+                    ponds.get(1).seeded(clouds.get(4).deseed());
+                if(lines.get(4).Lac2)
+                    ponds.get(2).seeded(clouds.get(4).deseed());
 
             }
 
@@ -628,6 +815,14 @@ class Game {
                 && (heli.myTranslate.getY() < cloud.myTranslate.getY()
                 + cloud.getRadius() && heli.myTranslate.getY()
                 > cloud.myTranslate.getY() - cloud.getRadius());
+    }
+    public boolean isFuel(Helicopter heli, Blimp blimp){
+        return (heli.myTranslate.getX() > (blimp.myTranslate.getX() -
+                51) && heli.myTranslate.getX()
+                < (blimp.myTranslate.getX() + 51))
+                && (heli.myTranslate.getY() < blimp.myTranslate.getY()
+                + 51 && heli.myTranslate.getY()
+                > blimp.myTranslate.getY() - 51);
     }
     public void populate(Pane parent){
 
@@ -673,7 +868,11 @@ class Game {
     }
 }
 class Lines extends Pane{
-
+        /*
+            by making this class i mange to have one cloud have 3 lines to each
+            cloud and manage to use this as a trigger to see if the cloud was
+            in range.
+         */
     ArrayList<Pond> ponds;
     Cloud c;
     Line line0;
@@ -683,11 +882,17 @@ class Lines extends Pane{
     public Lines(ArrayList<Pond> p, Cloud c){
         this.ponds = p;
         this.c = c;
-        line0 = new Line(this.ponds.get(0).myTranslate.getX(),this.ponds.get(0).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        line0 = new Line(this.ponds.get(0).myTranslate.getX(),this.ponds.get(0).
+                myTranslate.getY(),this.c.myTranslate.getX(),
+                this.c.myTranslate.getY());
         this.getChildren().add(line0);
-        line1 = new Line(this.ponds.get(1).myTranslate.getX(),this.ponds.get(1).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        line1 = new Line(this.ponds.get(1).myTranslate.getX(),this.ponds.get(1).
+                myTranslate.getY(),this.c.myTranslate.getX(),
+                this.c.myTranslate.getY());
         this.getChildren().add(line1);
-        line2 = new Line(this.ponds.get(2).myTranslate.getX(),this.ponds.get(2).myTranslate.getY(),this.c.myTranslate.getX(),this.c.myTranslate.getY());
+        line2 = new Line(this.ponds.get(2).myTranslate.getX(),
+                this.ponds.get(2).myTranslate.getY(),this.c.myTranslate.getX()
+                ,this.c.myTranslate.getY());
         this.getChildren().add(line2);
         Lac0 = false;
         Lac1 = false;
@@ -739,9 +944,13 @@ class Lines extends Pane{
     }
 
 }
-class backGround extends Pane{
+class BackGround extends Pane{
+
+    /*
+            it was a nice image//
+     */
     Image backGround;
-    public backGround(){
+    public BackGround(){
         backGround = new Image("land.jpg");
         ImageView back = new ImageView(backGround);
         back.setFitHeight(800);
@@ -749,7 +958,13 @@ class backGround extends Pane{
         this.getChildren().add(back);
     }
 }
-class music{
+class Music {
+
+    /*
+        For the music I kept it simple, so just some music to have as background
+        and some music for when you are running out of fuel and a falling sound.
+     */
+
     String mus1 = "BackGround.mp3";
     String mus2 = "Running.mp3";
     String fall = "falling.mp3";
@@ -759,30 +974,35 @@ class music{
     MediaPlayer player;
     MediaPlayer player2;
     MediaPlayer player3;
-    public music(){
+    public Music(){
         player = new MediaPlayer(background);
         player2 = new MediaPlayer(running);
         player3 = new MediaPlayer(falling);
     }
     public void playBack(){
-        //player.play();
+        player.play();
     }
     public void runningLow(){
         player.setMute(true);
-        //player2.play();
+        player2.play();
     }
     public void fail(){
         player.setMute(true);
         player2.setMute(true);
-       // player3.play();
+        player3.play();
     }
 }
-class popUp {
-    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "kanye was right!!!!",
+class PopUp {
+
+    /*
+        For the winLose screen I decided to use an Alert as it more easily let
+        me add buttons and manage the user input.
+     */
+    Alert pop = new Alert(Alert.AlertType.CONFIRMATION, "",
             ButtonType.YES, ButtonType.NO);
     GameApp x;
 
-    public popUp(GameApp x){
+    public PopUp(GameApp x){
         this.x = x;
     }
     public void winOrLose(){
@@ -803,8 +1023,11 @@ class popUp {
                 }
 
             });
-        }else if(x.game.pondAvg() >= 80 && x.heli.inHelipad() && !x.heli.ignition){
-            pop.setContentText("Great job!!!!, try again?");
+        }else if(x.game.pondAvg() >= 80 && x.heli.inHelipad() &&
+                !x.heli.ignition){
+            int score = x.game.pondAvg() * x.heli.fuel;
+            pop.setContentText("Great job!!!! your score is: " + score +
+                    " , try again?");
             pop.show();
             pop.setOnHidden(evt -> {
                 if (pop.getResult() == ButtonType.YES) {
@@ -826,7 +1049,16 @@ public class GameApp extends Application {
     Game game;
     Helicopter heli;
     Pane root;
-    popUp pop;
+    PopUp pop;
+
+    /*
+        For my GameApp class I made the decision to have the event to handle
+        the key presses so that I could more easy get access to the different
+        methods that are needed for the program to work.
+
+        I manage to finish all of A2 and some of A3
+
+     */
     public void start(Stage primaryStage) {
 
         root = new Pane();
@@ -834,12 +1066,12 @@ public class GameApp extends Application {
 
 
         init(root);
-        pop = new popUp(this);
+        pop = new PopUp(this);
         Scene scene = new Scene(root, GAME_WIDTH, GAME_HEIGHT);
 
 
         primaryStage.setScene(scene);
-        heli = ((Helicopter) root.getChildren().get(4));
+        heli = ((Helicopter) root.getChildren().get(5));
 
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.UP){
@@ -867,19 +1099,24 @@ public class GameApp extends Application {
             }
             if(e.getCode() == KeyCode.SPACE){
                 if(heli.ontop1){
-                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(0)).seed();
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren()
+                            .get(0)).seed();
                 }
                 if(heli.ontop2){
-                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(1)).seed();
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren()
+                            .get(1)).seed();
                 }
                 if(heli.ontop3){
-                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(2)).seed();
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren()
+                            .get(2)).seed();
                 }
                 if(heli.ontop4){
-                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(3)).seed();
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren()
+                            .get(3)).seed();
                 }
                 if(heli.ontop5){
-                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren().get(4)).seed();
+                    ((Cloud)((Pane)root.getChildren().get(3)).getChildren()
+                            .get(4)).seed();
                 }
             }
             if(e.getCode() == KeyCode.D){
@@ -904,11 +1141,15 @@ public class GameApp extends Application {
 
         Helipad pad = new Helipad();
         Helicopter boom = new Helicopter();
-        backGround back = new backGround();
+        BackGround back = new BackGround();
+        Blimp blimp = new Blimp();
 
-        root.getChildren().addAll(back,pad,new Pane(new Pond(),new Pond(),new Pond()),
-                new Pane(new Cloud(),new Cloud(),new Cloud(),new Cloud(),new Cloud()),boom);
-
+        root.getChildren().addAll(back,pad,new Pane(new Pond(),
+                        new Pond(),new Pond()),
+                new Pane(new Cloud(),new Cloud(),new Cloud(),new Cloud(),
+                        new Cloud()),blimp,boom);
+        blimp.myTranslate.setX(0);
+        blimp.myTranslate.setY(400);
         boom.translate(400,50);
         boom.setPivot(400,50);
         heli = boom;
